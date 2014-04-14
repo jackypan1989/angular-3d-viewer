@@ -3,6 +3,8 @@
     <!-- jQuery -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
 
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/async/0.7.0/async.js"></script>
+
     <!-- Bootstrap 3.1.1 -->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -11,13 +13,13 @@
     <link rel="stylesheet" href="http://bootswatch.com/united/bootstrap.css"/>
 
     <!-- Three.JS r61-->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r61/three.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.min.js"></script>
 
     <!-- AngularJS 1.2.10 -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
 
     <!-- Loader for the jeep -->
-    <script src="loaders/AssimpJSONLoader.js"></script>
+    <script src="loaders/STLLoader.js"></script>
 
     <!-- angular-threejs-viewer -->
     <script src="../dist/angular-3d-viewer.js"></script>
@@ -26,9 +28,17 @@
     <script src="app.js"></script>
   </head>
   <body>
-    <div class='container'>
+    <div class="container">
+      <h1> 3D model viewer Demo</h1>
       <hello> asd
       </hello>
+      <hr>
+      <button ng-click='viewFromTop()'>viewFromTop<button>
+      <button ng-click='viewFromBottom()'>viewFromBottom<button>
+      <button ng-click='viewFromSide()'>viewFromSide<button>
+      <button ng-click='nextStep()'>nextStep<button>
+      <button ng-click='play()'>play<button>
+      <button ng-click='stop()'>stop<button>
     </div>
   </body>
 </html>
