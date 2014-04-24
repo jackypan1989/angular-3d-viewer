@@ -5,7 +5,7 @@ angular.module('angular-3d-viewer')
     replace: true,
     template: '<canvas id="mainCanvas"></canvas>',
     link: function (scope, element, attrs) {
-      var renderer, scene, camera;
+      var renderer, scene, camera, controls;
       var mesh = [];
       var index = 0;
       var step = 0;
@@ -26,6 +26,9 @@ angular.module('angular-3d-viewer')
         camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
         camera.position.set(0, 0, 70);
         scene.add(camera);
+
+        controls = new THREE.TrackballControls(camera, document.getElementById('mainCanvas'));
+        controls.addEventListener( 'change', render );
 
         var directionalLight = new THREE.DirectionalLight( 0xffffff );
         directionalLight.position.x = 0; 
@@ -55,35 +58,10 @@ angular.module('angular-3d-viewer')
           mesh[index].position = new THREE.Vector3(0, -30, 0);
 
           scene.add(mesh[index]);
-          index++;
-          if (index >= 2) animate();
-          for(var i = 0; i < mesh.length; i++) {
-            mesh[i].visible = false;
-          }
-
-           mesh[0].visible = true;
+          animate();
         });
         
-        async.series([
-            function(callback){
-                // do some more stuff ...
-                loader.load( './models/Subsetup2_Mandibular.stl');
-                callback(null, 'two');
-            },
-            function(callback){
-                // do some more stuff ...
-                loader.load( './models/Subsetup1_Mandibular.stl');
-                callback(null, 'three');
-            },
-            function(callback){
-                // do some stuff ...
-                loader.load( './models/Mandibular.stl');
-                callback(null, 'one');
-            }
-        ], function(err, results){
-            
-
-        });
+        loader.load( './models/PokeBall.stl');
 
       }
 
@@ -94,8 +72,13 @@ angular.module('angular-3d-viewer')
           }
         }
 
+        requestAnimationFrame(animate);
+        controls.update();
+        render();
+      }
+
+      function render() {
         renderer.render(scene, camera);
-        requestAnimationFrame( animate );
       }
 
       scope.viewFromTop = function() {
