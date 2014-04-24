@@ -1,11 +1,11 @@
 angular.module('angular-3d-viewer')
-  .directive('hello', function() {
+  .directive('viewer', function() {
   return {
     restrict: 'E',
     replace: true,
     template: '<canvas id="mainCanvas"></canvas>',
     link: function (scope, element, attrs) {
-      var renderer, scene, camera, controls;
+      var renderer, scene, camera, controls, loader;
       var mesh = [];
       var index = 0;
       var step = 0;
@@ -38,21 +38,21 @@ angular.module('angular-3d-viewer')
         scene.add( directionalLight );
 
         var material = new THREE.MeshPhongMaterial( { ambient: 0x555555, color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
-        var loader = new THREE.STLLoader();
+        loader = new THREE.STLLoader();
         loader.addEventListener('load', function (event) {
           var geometry = event.content;
           // var mesh = new THREE.Mesh( geometry, material );
           geometry.computeFaceNormals();
           mesh[index] = new THREE.Mesh( 
             geometry,
-            new THREE.MeshNormalMaterial({
-                overdraw:true
-            }
-            // new THREE.MeshLambertMaterial({
-            //     overdraw:true,
-            //     color: 0xaa0000,
-            //     shading: THREE.FlatShading
+            // new THREE.MeshNormalMaterial({
+            //     overdraw:true
             // }
+            new THREE.MeshLambertMaterial({
+                overdraw:true,
+                color: 0xaa0000,
+                shading: THREE.FlatShading
+            }
           ));
 
           mesh[index].position = new THREE.Vector3(0, -30, 0);
@@ -60,9 +60,6 @@ angular.module('angular-3d-viewer')
           scene.add(mesh[index]);
           animate();
         });
-        
-        loader.load( './models/PokeBall.stl');
-
       }
 
       function animate() {
@@ -79,6 +76,11 @@ angular.module('angular-3d-viewer')
 
       function render() {
         renderer.render(scene, camera);
+      }
+
+      function loadFiles(fileName) {
+        loader.load('./models/'+fileName);
+        // loader.load('./models/PokeBall.stl');
       }
 
       scope.viewFromTop = function() {
@@ -119,6 +121,22 @@ angular.module('angular-3d-viewer')
 
       scope.stop = function() {
         rotate = false;
+      }
+
+      scope.load = function(fileName) {
+        var control = document.getElementById('files');
+        control.addEventListener('change', function(event) {
+          var i = 0,
+              files = control.files,
+              len = files.length;
+          for (; i < len; i++) {
+            console.log(files[i]);
+            console.log('Filename: ' + files[i].name);
+            console.log('Type: ' + files[i].type);
+            console.log('Size: ' + files[i].size + ' bytes');
+          }
+        }, false);
+        loadFiles(control.files[0].name);
       }
     }
   };

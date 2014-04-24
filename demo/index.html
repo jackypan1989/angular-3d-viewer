@@ -29,11 +29,13 @@
     <!-- Demo app logic -->
     <script src="app.js"></script>
   </head>
-  <body>
+  <body ng-controller='DemoCtrl'>
     <div class="container">
       <h1> 3D model viewer Demo</h1>
-      <hello> asd
-      </hello>
+      <viewer></viewer>
+      <br>
+      <input type='file' id='files' name='files[]' multiple />
+      <button ng-click='load()'>load</button>
       <hr>
       <button ng-click='viewFromTop()'>viewFromTop</button>
       <button ng-click='viewFromBottom()'>viewFromBottom</button>
