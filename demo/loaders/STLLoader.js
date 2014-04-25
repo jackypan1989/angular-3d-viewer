@@ -32,7 +32,7 @@ THREE.STLLoader.prototype = {
 
 };
 
-THREE.STLLoader.prototype.load = function ( url, callback ) {
+THREE.STLLoader.prototype.load = function ( url, info, callback ) {
 
   var scope = this;
 
@@ -44,7 +44,9 @@ THREE.STLLoader.prototype.load = function ( url, callback ) {
 
       var geometry = scope.parse( event.target.response || event.target.responseText );
 
-      scope.dispatchEvent( { type: 'load', content: geometry } );
+      scope.dispatchEvent( { type: 'load', content: geometry, info: info } );
+      
+      // scope.dispatchEvent( { type: 'load', content: geometry } );
 
       if ( callback ) callback( geometry );
 
