@@ -23,7 +23,7 @@ angular.module('angular-3d-viewer')
         scene = new THREE.Scene();
 
         camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
-        camera.position.set(0, 0, 70);
+        camera.position.set(0, 0, 100);
         scene.add(camera);
 
         controls = new THREE.TrackballControls(camera, document.getElementById('mainCanvas'));
@@ -133,19 +133,43 @@ angular.module('angular-3d-viewer')
       }
 
       scope.viewFromTop = function() {
-        camera.position.set(0, 50, 0);
+        scope.init();
+        camera.position.set(0, 100, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromBottom = function() {
+        scope.init();
         camera.position.set(0, -100, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
-      scope.viewFromSide = function() {
-        camera.position.set(0, 0, 70);
+      scope.viewFromFront = function() {
+        scope.init();
+        camera.position.set(0, 0, 100);
+        var camTarget = new THREE.Vector3( 0, 0, 0 );
+        camera.lookAt(camTarget);
+      }
+
+      scope.viewFromBack = function() {
+        scope.init();
+        camera.position.set(0, 0, -100);
+        var camTarget = new THREE.Vector3( 0, 0, 0 );
+        camera.lookAt(camTarget);
+      }
+
+      scope.viewFromLeft = function() {
+        scope.init();
+        camera.position.set(-100, 0, 0);
+        var camTarget = new THREE.Vector3( 0, 0, 0 );
+        camera.lookAt(camTarget);
+      }
+
+      scope.viewFromRight = function() {
+        scope.init();
+        camera.position.set(100, 0, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
@@ -162,6 +186,17 @@ angular.module('angular-3d-viewer')
         }
 
         mesh[step].visible = true;
+      }
+
+      scope.init = function() {
+        scope.stop();
+        for(var i = 0; i < meshs.length; i++) {
+          meshs[i].rotation.x = 0;
+          meshs[i].rotation.y = 0;
+          meshs[i].rotation.z = 0;
+          meshs[i].position = new THREE.Vector3(0, 0, 0);
+        }
+        camera.position.set(0, 0, 100);
       }
 
       scope.play = function() {
@@ -187,6 +222,8 @@ angular.module('angular-3d-viewer')
         }, false);
         loadFiles(control.files[0].name);
       }
+
+
     }
   };
 });

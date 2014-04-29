@@ -31,20 +31,29 @@
   </head>
   <body ng-controller='DemoCtrl'>
     <div class="container">
-      <h1> 3D model viewer Demo</h1>
-      <viewer></viewer>
-      <br>
-      <input type='file' id='files' name='files[]' multiple />
-      <button ng-click='load()'>load</button>
-      <hr>
-      <button ng-click='viewFromTop()'>viewFromTop</button>
-      <button ng-click='viewFromBottom()'>viewFromBottom</button>
-      <button ng-click='viewFromSide()'>viewFromSide</button>
-      <button ng-click='nextStep()'>nextStep</button>
-      <button ng-click='play()'>play</button>
-      <button ng-click='stop()'>stop</button>
-      <button ng-click='toggleTop()'>toggleTop</button>
-      <button ng-click='toggleBtm()'>toggleBtm</button>
+      <h1>3D model viewer Demo</h1>
+      <div class='row'>
+        <div class='col-md-9'>
+          <viewer></viewer>
+        </div>
+        <div class='col-md-3'>
+          <h3>Rotation Player</h3>
+          <button ng-click='init()'>init</button>
+          <button ng-click='play()'>play</button>
+          <button ng-click='stop()'>stop</button>
+          <hr>
+          <h3>View Angle</h3>
+          <button ng-click='viewFromTop()'>Top</button>
+          <button ng-click='viewFromBottom()'>Bottom</button>
+          <button ng-click='viewFromFront()'>Front</button>
+          <button ng-click='viewFromBack()'>Back</button>
+          <button ng-click='viewFromLeft()'>Left</button>
+          <button ng-click='viewFromRight()'>Right</button>
+          <hr>
+          <h3>Show Tooth</h3>
+          <button ng-click='toggleTop()'>toggleTop</button>
+          <button ng-click='toggleBtm()'>toggleBtm</button>
+        </div>
     </div>
   </body>
 </html>
