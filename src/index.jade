@@ -1,0 +1,71 @@
+html(ng-app='myApp')
+  head
+    // Bootstrap 3.1.1
+    link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    // Font Awesome
+    link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
+  body
+    .container
+      .row
+        .col-md-2
+          h4 User
+          button.btn.btn-default
+            i.fa.fa-user(style='font-size:7em')
+        .col-md-4
+          h4 Player options
+          .btn-group
+            button.btn.btn-default.btn-lg(ng-click='lastStep()')
+              i.fa.fa-step-backward.fa-fw
+            button.btn.btn-default.btn-lg(ng-click='play()')
+              i.fa.fa-play.fa-fw
+            button.btn.btn-default.btn-lg(ng-click='pause()')
+              i.fa.fa-pause.fa-fw
+            button.btn.btn-default.btn-lg(ng-click='stop()')
+              i.fa.fa-stop.fa-fw
+            button.btn.btn-default.btn-lg(ng-click='nextStep()')
+              i.fa.fa-step-forward.fa-fw
+          h4 Step: step {{step_anchor}}
+          ul.pagination(style='margin: 0;')
+            li(ng-repeat='mesh in meshs') 
+              a(href='#', ng-click='showStep($index)') {{$index}}
+        .col-md-6
+          h4 Others options
+          button.btn.btn-default.btn-lg(ng-click='init()')
+            | Initialize
+          button.btn.btn-default.btn-lg
+            | Open .pdf
+          h4 Status
+          {{message}}
+      hr
+      .row
+        .col-md-9
+          viewer
+        .col-md-3
+          h3 View Angle
+          button(ng-click='viewFromTop()') Top
+          button(ng-click='viewFromBottom()') Bottom
+          button(ng-click='viewFromFront()') Front
+          button(ng-click='viewFromBack()') Back
+          button(ng-click='viewFromLeft()') Left
+          button(ng-click='viewFromRight()') Right
+          hr
+          h3 Show Tooth
+          button(ng-click='toggleTop()') toggleTop
+          button(ng-click='toggleBtm()') toggleBtm
+    // jQuery
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js')
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/async/0.7.0/async.js')
+    // Bootstrap
+    script(src='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+    // Three.JS r61
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.min.js')
+    // AngularJS 1.2.10
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js')
+    // Loader for the jeep
+    script(src='loaders/STLLoader.js')
+    script(src='controls/TrackballControls.js')
+    // angular-threejs-viewer
+    script(src='../src/main.js')
+    script(src='../src/directives/angular-3d-viewer.js')
+    // Demo app logic
+    script(src='app.js')

@@ -92,7 +92,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
         changelog: {
             options: {
                 dest: 'CHANGELOG.md'
@@ -107,11 +106,29 @@ module.exports = function (grunt) {
                 files: ['test/unit/**'],
                 tasks: []
             }
+        },
+        jade: {
+            compile: {
+                options: {
+                    pretty: true,
+                    data: {
+                        debug: false
+                    },
+                    livereload: true
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'src/',
+                    src: ['**/*.jade'],
+                    dest: 'public/',
+                    ext: '.html'
+                }]
+            }
         }
     });
 
     // Build task.
-    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'autoprefixer']);
+    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'autoprefixer', 'jade']);
 
     // Default task.
     grunt.registerTask('default', ['build', 'connect', 'watch']);

@@ -1,0 +1,75 @@
+
+<html ng-app="myApp">
+  <head>
+    <!-- Bootstrap 3.1.1-->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <!-- Font Awesome-->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-2">
+          <h4>User</h4>
+          <button class="btn btn-default"><i style="font-size:7em" class="fa fa-user"></i></button>
+        </div>
+        <div class="col-md-4">
+          <h4>Player options</h4>
+          <div class="btn-group">
+            <button ng-click="lastStep()" class="btn btn-default btn-lg"><i class="fa fa-step-backward fa-fw"></i></button>
+            <button ng-click="play()" class="btn btn-default btn-lg"><i class="fa fa-play fa-fw"></i></button>
+            <button ng-click="pause()" class="btn btn-default btn-lg"><i class="fa fa-pause fa-fw"></i></button>
+            <button ng-click="stop()" class="btn btn-default btn-lg"><i class="fa fa-stop fa-fw"></i></button>
+            <button ng-click="nextStep()" class="btn btn-default btn-lg"><i class="fa fa-step-forward fa-fw"></i></button>
+          </div>
+          <h4>Step: step {{step_anchor}}</h4>
+          <ul style="margin: 0;" class="pagination">
+            <li ng-repeat="mesh in meshs"><a href="#" ng-click="showStep($index)">{{$index}}</a></li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h4>Others options</h4>
+          <button ng-click="init()" class="btn btn-default btn-lg">Initialize</button>
+          <button class="btn btn-default btn-lg">Open .pdf</button>
+          <h4>Status</h4>{{message}}
+        </div>
+      </div>
+      <hr/>
+      <div class="row">
+        <div class="col-md-9">
+          <viewer></viewer>
+        </div>
+        <div class="col-md-3">
+          <h3>View Angle</h3>
+          <button ng-click="viewFromTop()">Top</button>
+          <button ng-click="viewFromBottom()">Bottom</button>
+          <button ng-click="viewFromFront()">Front</button>
+          <button ng-click="viewFromBack()">Back</button>
+          <button ng-click="viewFromLeft()">Left</button>
+          <button ng-click="viewFromRight()">Right</button>
+          <hr/>
+          <h3>Show Tooth</h3>
+          <button ng-click="toggleTop()">toggleTop</button>
+          <button ng-click="toggleBtm()">toggleBtm</button>
+        </div>
+      </div>
+    </div>
+    <!-- jQuery-->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/async/0.7.0/async.js"></script>
+    <!-- Bootstrap-->
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <!-- Three.JS r61-->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.min.js"></script>
+    <!-- AngularJS 1.2.10-->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+    <!-- Loader for the jeep-->
+    <script src="loaders/STLLoader.js"></script>
+    <script src="controls/TrackballControls.js"></script>
+    <!-- angular-threejs-viewer-->
+    <script src="../src/main.js"></script>
+    <script src="../src/directives/angular-3d-viewer.js"></script>
+    <!-- Demo app logic-->
+    <script src="app.js"></script>
+  </body>
+</html>
