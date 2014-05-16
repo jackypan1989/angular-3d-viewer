@@ -13,13 +13,20 @@
           <h4>User</h4>
           <button class="btn btn-default"><i style="font-size:7em" class="fa fa-user"></i></button>
         </div>
+        <div class="col-md-2">
+          <h4>Info</h4>
+          <p>Id : {{data.id}}</p>
+          <p>Name : {{data.name}}</p>
+          <p>Clinic: {{data.clinic}}</p>
+          <p>Doctor : {{data.doctor}}</p>
+        </div>
         <div class="col-md-4">
           <h4>Player options</h4>
           <div class="btn-group">
             <button ng-click="lastStep()" class="btn btn-default btn-lg"><i class="fa fa-step-backward fa-fw"></i></button>
-            <button ng-click="play()" class="btn btn-default btn-lg"><i class="fa fa-play fa-fw"></i></button>
-            <button ng-click="pause()" class="btn btn-default btn-lg"><i class="fa fa-pause fa-fw"></i></button>
-            <button ng-click="stop()" class="btn btn-default btn-lg"><i class="fa fa-stop fa-fw"></i></button>
+            <button ng-hide="rotate" ng-click="play()" class="btn btn-default btn-lg"><i class="fa fa-play fa-fw"></i></button>
+            <button ng-show="rotate" ng-click="stop()" class="btn btn-default btn-lg"><i class="fa fa-pause fa-fw"></i></button>
+            <button ng-click="init()" class="btn btn-default btn-lg"><i class="fa fa-stop fa-fw"></i></button>
             <button ng-click="nextStep()" class="btn btn-default btn-lg"><i class="fa fa-step-forward fa-fw"></i></button>
           </div>
           <h4>Step: step {{step_anchor}}</h4>
@@ -27,30 +34,34 @@
             <li ng-repeat="mesh in meshs"><a href="#" ng-click="showStep($index)">{{$index}}</a></li>
           </ul>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <h4>Others options</h4>
-          <button ng-click="init()" class="btn btn-default btn-lg">Initialize</button>
-          <button class="btn btn-default btn-lg">Open .pdf</button>
+          <button ng-click="init()" class="btn btn-default btn-lg">Initialize</button><a href="demo.pdf" target="_new" class="btn btn-default btn-lg">Open .pdf</a>
           <h4>Status</h4>{{message}}
         </div>
       </div>
       <hr/>
       <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-8">
           <viewer></viewer>
         </div>
-        <div class="col-md-3">
-          <h3>View Angle</h3>
-          <button ng-click="viewFromTop()">Top</button>
-          <button ng-click="viewFromBottom()">Bottom</button>
-          <button ng-click="viewFromFront()">Front</button>
-          <button ng-click="viewFromBack()">Back</button>
-          <button ng-click="viewFromLeft()">Left</button>
-          <button ng-click="viewFromRight()">Right</button>
-          <hr/>
-          <h3>Show Tooth</h3>
-          <button ng-click="toggleTop()">toggleTop</button>
-          <button ng-click="toggleBtm()">toggleBtm</button>
+        <div class="col-md-2">
+          <h4>View Angle</h4>
+          <div class="btn-group-vertical">
+            <button ng-click="viewFromTop()" class="btn btn-default btn-lg">Top</button>
+            <button ng-click="viewFromBottom()" class="btn btn-default btn-lg">Bottom</button>
+            <button ng-click="viewFromFront()" class="btn btn-default btn-lg">Front</button>
+            <button ng-click="viewFromBack()" class="btn btn-default btn-lg">Back</button>
+            <button ng-click="viewFromLeft()" class="btn btn-default btn-lg">Left</button>
+            <button ng-click="viewFromRight()" class="btn btn-default btn-lg">Right</button>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <h4>Show Tooth</h4>
+          <div class="btn-group-vertical">
+            <button ng-click="toggleTop()" class="btn btn-default btn-lg">toggleTop</button>
+            <button ng-click="toggleBtm()" class="btn btn-default btn-lg">toggleBtm</button>
+          </div>
         </div>
       </div>
     </div>

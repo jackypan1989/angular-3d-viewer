@@ -11,16 +11,22 @@ html(ng-app='myApp')
           h4 User
           button.btn.btn-default
             i.fa.fa-user(style='font-size:7em')
+        .col-md-2
+          h4 Info
+          p Id : {{data.id}}
+          p Name : {{data.name}}
+          p Clinic: {{data.clinic}}
+          p Doctor : {{data.doctor}}
         .col-md-4
           h4 Player options
           .btn-group
             button.btn.btn-default.btn-lg(ng-click='lastStep()')
               i.fa.fa-step-backward.fa-fw
-            button.btn.btn-default.btn-lg(ng-click='play()')
+            button.btn.btn-default.btn-lg(ng-hide='rotate', ng-click='play()')
               i.fa.fa-play.fa-fw
-            button.btn.btn-default.btn-lg(ng-click='pause()')
+            button.btn.btn-default.btn-lg(ng-show='rotate',ng-click='stop()')
               i.fa.fa-pause.fa-fw
-            button.btn.btn-default.btn-lg(ng-click='stop()')
+            button.btn.btn-default.btn-lg(ng-click='init()')
               i.fa.fa-stop.fa-fw
             button.btn.btn-default.btn-lg(ng-click='nextStep()')
               i.fa.fa-step-forward.fa-fw
@@ -28,30 +34,32 @@ html(ng-app='myApp')
           ul.pagination(style='margin: 0;')
             li(ng-repeat='mesh in meshs') 
               a(href='#', ng-click='showStep($index)') {{$index}}
-        .col-md-6
+        .col-md-4
           h4 Others options
           button.btn.btn-default.btn-lg(ng-click='init()')
             | Initialize
-          button.btn.btn-default.btn-lg
+          a.btn.btn-default.btn-lg(href='demo.pdf', target='_new')
             | Open .pdf
           h4 Status
           {{message}}
       hr
       .row
-        .col-md-9
+        .col-md-8
           viewer
-        .col-md-3
-          h3 View Angle
-          button(ng-click='viewFromTop()') Top
-          button(ng-click='viewFromBottom()') Bottom
-          button(ng-click='viewFromFront()') Front
-          button(ng-click='viewFromBack()') Back
-          button(ng-click='viewFromLeft()') Left
-          button(ng-click='viewFromRight()') Right
-          hr
-          h3 Show Tooth
-          button(ng-click='toggleTop()') toggleTop
-          button(ng-click='toggleBtm()') toggleBtm
+        .col-md-2
+          h4 View Angle
+          .btn-group-vertical
+            button.btn.btn-default.btn-lg(ng-click='viewFromTop()') Top
+            button.btn.btn-default.btn-lg(ng-click='viewFromBottom()') Bottom
+            button.btn.btn-default.btn-lg(ng-click='viewFromFront()') Front
+            button.btn.btn-default.btn-lg(ng-click='viewFromBack()') Back
+            button.btn.btn-default.btn-lg(ng-click='viewFromLeft()') Left
+            button.btn.btn-default.btn-lg(ng-click='viewFromRight()') Right
+        .col-md-2
+          h4 Show Tooth
+          .btn-group-vertical
+            button.btn.btn-default.btn-lg(ng-click='toggleTop()') toggleTop
+            button.btn.btn-default.btn-lg(ng-click='toggleBtm()') toggleBtm
     // jQuery
     script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js')
     script(src='http://cdnjs.cloudflare.com/ajax/libs/async/0.7.0/async.js')

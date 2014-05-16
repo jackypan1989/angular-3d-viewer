@@ -1,6 +1,6 @@
 /**
  * Angular 3d Viewer
- * @version v0.0.1 - 2014-05-14
+ * @version v0.0.1 - 2014-05-16
  * @link http://jackypan1989.github.com/angular-3d-viewer
  * @author Guan Yu Pan
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -9,15 +9,21 @@
 
 angular.module('angular-3d-viewer', []);
 angular.module('angular-3d-viewer')
-  .directive('viewer', function() {
+  .directive('viewer', function($http) {
   return {
     restrict: 'E',
     replace: true,
     template: '<canvas id="mainCanvas"></canvas>',
     link: function (scope, element, attrs) {
       scope.step_anchor = 0;
-      scope.step_num = 2;
+      scope.step_num = 4;
+      scope.data = {};
+      scope.rotate = false;
       scope.message = 'Initialize canvas...';
+      scope.showTop = true;
+      scope.showBtm = true;
+      scope.showTooth = true;
+      scope.showJaw = true;
 
       var meshs = scope.meshs = new Array(scope.step_num);
       for(var i = 0; i < scope.step_num; i+=1) {
@@ -27,7 +33,6 @@ angular.module('angular-3d-viewer')
       var renderer, scene, camera, controls, loader;
       var width = 720;
       var height = 540;
-      var rotate = false;
 
       function init() {
         renderer = new THREE.WebGLRenderer({canvas: document.getElementById('mainCanvas')});
@@ -40,20 +45,16 @@ angular.module('angular-3d-viewer')
         setLight();
         setAxes();
         setLoader();
-
-        // async.series([
-        //   load(), animate()
-        // ], function(err, values) {
-
-        // });
-  
+        
+        loadInfo();
         load();
         animate();
       }
 
       function setCamera() {
-        camera = new THREE.PerspectiveCamera(75, width / height, 1, 10000);
-        camera.position.set(0, 0, 100);
+        // camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
+        camera = new THREE.OrthographicCamera( width / - 10, width / 10, height / 10, height / - 10, 1, 1000 );
+        camera.position.set(0, 0, 75);
         scene.add(camera);
       }
 
@@ -63,29 +64,29 @@ angular.module('angular-3d-viewer')
       }
 
       function setLight() {
-        var light_color = 0xeeeeee;
+        var light_color = 0xcccccc;
         var directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
         directionalLight.position.y = 0; 
-        directionalLight.position.z = 20; 
-        directionalLight.position.normalize();
+        directionalLight.position.z = 1; 
+        // directionalLight.position.normalize();
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
         directionalLight.position.y = 0; 
-        directionalLight.position.z = -20; 
+        directionalLight.position.z = -1; 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
-        directionalLight.position.y = 20; 
+        directionalLight.position.y = 1; 
         directionalLight.position.z = 0; 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
-        directionalLight.position.y = -20; 
+        directionalLight.position.y = -1; 
         directionalLight.position.z = 0; 
         scene.add( directionalLight );
       }
@@ -145,9 +146,9 @@ angular.module('angular-3d-viewer')
             mat; 
 
         if(dashed) {
-                mat = new THREE.LineDashedMaterial({ linewidth: 3, color: colorHex, dashSize: 3, gapSize: 3 });
+          mat = new THREE.LineDashedMaterial({ linewidth: 3, color: colorHex, dashSize: 3, gapSize: 3 });
         } else {
-                mat = new THREE.LineBasicMaterial({ linewidth: 3, color: colorHex });
+          mat = new THREE.LineBasicMaterial({ linewidth: 3, color: colorHex });
         }
 
         geom.vertices.push( src.clone() );
@@ -157,36 +158,42 @@ angular.module('angular-3d-viewer')
         var axis = new THREE.Line( geom, mat, THREE.LinePieces );
 
         return axis;
-
       }
 
-
       function load() {
-        for (var i = 0; i<2 ;i+=1) {
+        for (var i = 0; i<4 ;i+=1) {
           // load top tooth
           for (var j = 1; j<=16; j+=1) {
-            loader.load('./models/example/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+            loader.load('./models/example/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
           }
 
           // load btm tooth
           for (var j = 17; j<=32; j+=1) {
-            loader.load('./models/example/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+            loader.load('./models/example/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
           }
 
           // load jaw
-          loader.load('./models/example/stage'+i+'/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-          loader.load('./models/example/stage'+i+'/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+          loader.load('./models/example/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+          loader.load('./models/example/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
         }
       }
 
+      function loadInfo() {
+        $http.get('data.json').then(function(result) {
+          scope.data = result.data;
+          scope.$apply();
+        });
+      }
+
       function animate() {
-        if(rotate) {
+        if(scope.rotate) {
           for(var i = 0; i < meshs.length; i++) {
             for(var j = 0; j < meshs[i].length; j++) {
               meshs[i][j].rotation.y += 0.01;
             }
           }
         }
+
         requestAnimationFrame(animate);
         controls.update();
         render();
@@ -219,42 +226,42 @@ angular.module('angular-3d-viewer')
 
       scope.viewFromTop = function() {
         scope.init();
-        camera.position.set(0, 100, 0);
+        camera.position.set(1, 75, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromBottom = function() {
         scope.init();
-        camera.position.set(0, -100, 0);
+        camera.position.set(0, -75, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromFront = function() {
         scope.init();
-        camera.position.set(0, 0, 100);
+        camera.position.set(0, 0, 75);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromBack = function() {
         scope.init();
-        camera.position.set(0, 0, -100);
+        camera.position.set(0, 0, -75);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromLeft = function() {
         scope.init();
-        camera.position.set(-100, 0, 0);
+        camera.position.set(-75, 0, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromRight = function() {
         scope.init();
-        camera.position.set(100, 0, 0);
+        camera.position.set(75, 0, 0);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
@@ -267,6 +274,21 @@ angular.module('angular-3d-viewer')
         for(var i = 0; i < meshs[step].length; i++) {
           meshs[step][i].visible = true;
         }
+
+        // if(scope.showTop) {
+        //   for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
+        //     if(meshs[scope.step_anchor][i].info.location === 'top') {
+        //       meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
+        //     }
+        //   }
+        // } else if(scope.showBtm) {
+        //   for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
+        //     if(meshs[scope.step_anchor][i].info.location === 'btm') {
+        //       meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
+        //     }
+        //   }
+        // }
+
         scope.step_anchor = step;
       }
 
@@ -300,11 +322,11 @@ angular.module('angular-3d-viewer')
       }
 
       scope.play = function() {
-        rotate = true;
+        scope.rotate = true;
       }
 
       scope.stop = function() {
-        rotate = false;
+        scope.rotate = false;
       }
 
       init();
