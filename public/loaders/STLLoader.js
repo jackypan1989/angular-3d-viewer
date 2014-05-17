@@ -52,7 +52,8 @@ THREE.STLLoader.prototype.load = function ( url, info, callback ) {
 
     } else {
 
-      scope.dispatchEvent( { type: 'error', message: 'Couldn\'t load URL [' + url + ']', response: event.target.responseText } );
+      // err msg
+      // scope.dispatchEvent( { type: 'error', message: 'Couldn\'t load URL [' + url + ']', response: event.target.responseText } );
 
     }
 

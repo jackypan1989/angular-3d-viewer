@@ -1,10 +1,12 @@
 angular.module('angular-3d-viewer')
-  .directive('viewer', function($http) {
+  .directive('viewer', function($http, $timeout) {
   return {
     restrict: 'E',
     replace: true,
     template: '<canvas id="mainCanvas"></canvas>',
     link: function (scope, element, attrs) {
+      var dom = document.getElementById('mainCanvas');
+
       scope.step_anchor = 0;
       scope.step_num = 4;
       scope.data = {};
@@ -12,20 +14,24 @@ angular.module('angular-3d-viewer')
       scope.message = 'Initialize canvas...';
       scope.showTop = true;
       scope.showBtm = true;
-      scope.showTooth = true;
+      scope.showTeeth = true;
       scope.showJaw = true;
+      scope.playStep = false;
 
       var meshs = scope.meshs = new Array(scope.step_num);
       for(var i = 0; i < scope.step_num; i+=1) {
         meshs[i] = [];
       }
 
-      var renderer, scene, camera, controls, loader;
-      var width = 720;
-      var height = 540;
+      var renderer, projector, scene, camera, controls, loader;
+      var width = 1600;
+      var height = 900;
+      var zoom = 25;
 
       function init() {
-        renderer = new THREE.WebGLRenderer({canvas: document.getElementById('mainCanvas')});
+        projector = new THREE.Projector();
+        //renderer = new THREE.CanvasRenderer({canvas: dom});
+        renderer = new THREE.WebGLRenderer({canvas: dom});
         renderer.setSize( width, height );
         renderer.setClearColor(0xDDDDDD);
         scene = new THREE.Scene();
@@ -36,30 +42,49 @@ angular.module('angular-3d-viewer')
         setAxes();
         setLoader();
         
+        // var gridXZ = new THREE.GridHelper(1000, 100);
+        // gridXZ.setColors( new THREE.Color(0x006600), new THREE.Color(0x006600) );
+        // gridXZ.position.set( 500,0,500 );
+        // scene.add(gridXZ);
+        
+        // var gridXY = new THREE.GridHelper(1000, 100);
+        // gridXY.position.set( 500,500,0 );
+        // gridXY.rotation.x = Math.PI/2;
+        // gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
+        // scene.add(gridXY);
+
+        // var gridYZ = new THREE.GridHelper(1000, 100);
+        // gridYZ.position.set( 0,500,500 );
+        // gridYZ.rotation.z = Math.PI/2;
+        // gridYZ.setColors( new THREE.Color(0x660000), new THREE.Color(0x660000) );
+        // scene.add(gridYZ);        
+
+        // dom.addEventListener( 'dblclick', onDocumentDblclick, false );
+
         loadInfo();
         load();
         animate();
       }
 
       function setCamera() {
-        // camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
-        camera = new THREE.OrthographicCamera( width / - 10, width / 10, height / 10, height / - 10, 1, 1000 );
-        camera.position.set(0, 0, 75);
+        //camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
+        camera = new THREE.OrthographicCamera( -width / zoom, width / zoom, height / zoom, -height / zoom, -1000, 1000 );
+        // camera = new THREE.CombinedCamera(width / 10, height / 10, 100, width / height, 1, 10000, 0.2, 2000); 
+        camera.position.set(0, 0, 100);
         scene.add(camera);
       }
 
       function setControl() {
-        controls = new THREE.TrackballControls(camera, document.getElementById('mainCanvas'));
+        controls = new THREE.TrackballControls(camera, dom);
         controls.addEventListener( 'change', render );
       }
 
       function setLight() {
-        var light_color = 0xcccccc;
+        var light_color = 0x999999;
         var directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
         directionalLight.position.y = 0; 
         directionalLight.position.z = 1; 
-        // directionalLight.position.normalize();
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
@@ -77,6 +102,18 @@ angular.module('angular-3d-viewer')
         directionalLight = new THREE.DirectionalLight( light_color );
         directionalLight.position.x = 0; 
         directionalLight.position.y = -1; 
+        directionalLight.position.z = 0; 
+        scene.add( directionalLight );
+
+        directionalLight = new THREE.DirectionalLight( light_color );
+        directionalLight.position.x = 1; 
+        directionalLight.position.y = 0; 
+        directionalLight.position.z = 0; 
+        scene.add( directionalLight );
+
+        directionalLight = new THREE.DirectionalLight( light_color );
+        directionalLight.position.x = -1; 
+        directionalLight.position.y = 0; 
         directionalLight.position.z = 0; 
         scene.add( directionalLight );
       }
@@ -118,55 +155,60 @@ angular.module('angular-3d-viewer')
       }
 
       function setAxes() {
-        var length = 1000;
-        var axes = new THREE.Object3D();
-
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false ) ); // +X
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true) ); // -X
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false ) ); // +Y
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true ) ); // -Y
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false ) ); // +Z
-        axes.add( buildAxis( new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true ) ); // -Z
-
+        var axes = new THREE.AxisHelper(1000);
+        axes.position.set(0, 0, 0);
         scene.add(axes);
       }
 
-      function buildAxis( src, dst, colorHex, dashed ) {
-        var geom = new THREE.Geometry(),
-            mat; 
-
-        if(dashed) {
-          mat = new THREE.LineDashedMaterial({ linewidth: 3, color: colorHex, dashSize: 3, gapSize: 3 });
-        } else {
-          mat = new THREE.LineBasicMaterial({ linewidth: 3, color: colorHex });
-        }
-
-        geom.vertices.push( src.clone() );
-        geom.vertices.push( dst.clone() );
-        geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
-
-        var axis = new THREE.Line( geom, mat, THREE.LinePieces );
-
-        return axis;
-      }
-
       function load() {
-        for (var i = 0; i<4 ;i+=1) {
+        for (var i = 0; i<scope.step_num ;i+=1) {
           // load top tooth
           for (var j = 1; j<=16; j+=1) {
-            loader.load('./models/example/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
           }
 
           // load btm tooth
           for (var j = 17; j<=32; j+=1) {
-            loader.load('./models/example/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
           }
 
           // load jaw
-          loader.load('./models/example/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-          loader.load('./models/example/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+          loader.load('./models/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+          loader.load('./models/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
         }
+
+        // for (var i = 0; i<4 ;i+=1) {
+        //   // load top tooth
+        //   for (var j = 1; j<=16; j+=1) {
+        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+        //   }
+
+        //   // load btm tooth
+        //   for (var j = 17; j<=32; j+=1) {
+        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+        //   }
+
+        //   // load jaw
+        //   loader.load('./models/stage'+i+'/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+        //   loader.load('./models/stage'+i+'/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+        // }
       }
+
+      // function onDocumentDblclick( event ) {
+
+      //   alert(event.clientX);
+      //   event.preventDefault();
+
+      //   var vector = new THREE.Vector3( ( event.clientX / width ) * 2 - 1, - ( event.clientY / height ) * 2 + 1, 0.5 );
+      //   var ray = projector.pickingRay( vector, camera );
+
+      //   var intersects = ray.intersectObjects( meshs[scope.step_anchor] );
+
+      //   if ( intersects.length > 0 ) {
+      //     intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
+      //   }
+
+      // }
 
       function loadInfo() {
         $http.get('data.json').then(function(result) {
@@ -199,31 +241,66 @@ angular.module('angular-3d-viewer')
       }
 
       scope.toggleTop = function () {
-        for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
-          if(meshs[scope.step_anchor][i].info.location === 'top') {
-            meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
-          }
-        }
+        scope.showTop = !scope.showTop;
+        scope.showStep(scope.step_anchor);
       }
 
       scope.toggleBtm = function () {
-        for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
-          if(meshs[scope.step_anchor][i].info.location === 'btm') { 
-            meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
+        scope.showBtm = !scope.showBtm;
+        scope.showStep(scope.step_anchor);
+      }
+
+      scope.toggleTeeth = function () {
+        scope.showTeeth = !scope.showTeeth;
+        scope.showStep(scope.step_anchor);
+      }
+
+      scope.toggleJaw = function () {
+        scope.showJaw = !scope.showJaw;
+        scope.showStep(scope.step_anchor);
+      }
+      
+      scope.toggleSplit = function() {
+        scope.init();
+        for(var i = 0; i<meshs.length; i++) {
+          for(var j = 0; j<meshs[i].length; j+=1) {
+            if(meshs[i][j].info.location === 'btm') {
+              meshs[i][j].position.set(0, 0, 0);
+            } else {
+              meshs[i][j].position.set(0, -5, -60);
+              meshs[i][j].rotation.set(-Math.PI, 0, 0);  
+            }
           }
         }
+
+        // camera.position.set(0, 200, -50);
+        // var camTarget = new THREE.Vector3( 0, 0, -100 );
+        // camera.lookAt(camTarget);
+
+        controls.reset();
+        camera.left = -width / zoom * 2;
+        camera.right = width / zoom * 2;
+        camera.top = height / zoom * 2 +20;
+        camera.bottom = -height / zoom * 2 +20;
+        console.log(camera);
+        camera.position.y = 400;
+        var camTarget = new THREE.Vector3( 0, 0, 0 );
+        camera.lookAt(camTarget);
+        camera.updateProjectionMatrix();
+
       }
 
       scope.viewFromTop = function() {
         scope.init();
-        camera.position.set(1, 75, 0);
+        controls.reset();
+        camera.position.set(5, 75, 5);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
 
       scope.viewFromBottom = function() {
         scope.init();
-        camera.position.set(0, -75, 0);
+        camera.position.set(5, -75, 5);
         var camTarget = new THREE.Vector3( 0, 0, 0 );
         camera.lookAt(camTarget);
       }
@@ -257,34 +334,35 @@ angular.module('angular-3d-viewer')
       }
 
       scope.showStep = function(step) {
-        for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
-          meshs[scope.step_anchor][i].visible = false;
+        if(step !== scope.step_anchor) {
+          for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
+            meshs[scope.step_anchor][i].visible = false;
+          }
         }
 
         for(var i = 0; i < meshs[step].length; i++) {
-          meshs[step][i].visible = true;
+          meshs[step][i].visible = false;
+          if(scope.showTop && meshs[step][i].info.location === 'top') {
+            if(scope.showTeeth && meshs[step][i].info.type === 'tooth') {
+              meshs[step][i].visible = true;
+            } else if (scope.showJaw && meshs[step][i].info.type === 'jaw') {
+              meshs[step][i].visible = true;
+            }
+          } else if(scope.showBtm && meshs[step][i].info.location === 'btm') {
+            if(scope.showTeeth && meshs[step][i].info.type === 'tooth') {
+              meshs[step][i].visible = true;
+            } else if (scope.showJaw && meshs[step][i].info.type === 'jaw') {
+              meshs[step][i].visible = true;
+            }
+          }
         }
-
-        // if(scope.showTop) {
-        //   for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
-        //     if(meshs[scope.step_anchor][i].info.location === 'top') {
-        //       meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
-        //     }
-        //   }
-        // } else if(scope.showBtm) {
-        //   for(var i = 0; i < meshs[scope.step_anchor].length; i++) {
-        //     if(meshs[scope.step_anchor][i].info.location === 'btm') {
-        //       meshs[scope.step_anchor][i].visible = !meshs[scope.step_anchor][i].visible;
-        //     }
-        //   }
-        // }
 
         scope.step_anchor = step;
       }
 
       scope.nextStep = function() {
         if(scope.step_anchor === scope.step_num-1) {
-          scope.showStep(0);
+          // scope.showStep(0);
         } else {
           scope.showStep(scope.step_anchor+1);
         }
@@ -292,31 +370,50 @@ angular.module('angular-3d-viewer')
 
       scope.lastStep = function() {
         if(scope.step_anchor === 0) {
-          scope.showStep(scope.step_num-1);
+          // scope.showStep(scope.step_num-1);
         } else {
           scope.showStep(scope.step_anchor-1);
         }
       }
 
       scope.init = function() {
-        scope.stop();
+        // scope.stop();
         controls.reset();
+        camera.left = -width / zoom;
+        camera.right = width / zoom;
+        camera.top = height / zoom;
+        camera.bottom = -height / zoom;
+        camera.updateProjectionMatrix();
         for(var i = 0; i < meshs.length; i++) {
           for(var j = 0; j < meshs[i].length; j++) {
-            meshs[i][j].position = new THREE.Vector3(0, 0, 0);
-            meshs[i][j].rotation.x = 0;
-            meshs[i][j].rotation.y = 0;
-            meshs[i][j].rotation.z = 0;
+            meshs[i][j].position.set( 0, 0, 0 );
+            meshs[i][j].rotation.set( 0, 0, 0 );
           }
         }
+        scope.showStep(0);
       }
 
       scope.play = function() {
-        scope.rotate = true;
+        // scope.rotate = true;
+        if(!scope.playStep) {
+          scope.playStep = true;
+          // scope.showStep(0);
+        }
+        
+        if(scope.step_anchor !== scope.step_num-1 ) {
+          $timeout(function(){
+            scope.nextStep();
+            scope.play();
+          }, 1000);
+        } else {
+          scope.stop();
+        }
+
       }
 
       scope.stop = function() {
-        scope.rotate = false;
+        // scope.rotate = false;
+        scope.playStep = false;
       }
 
       init();

@@ -5,63 +5,62 @@
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <!-- Font Awesome-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
+    <link rel="stylesheet" href="demo.css"/>
   </head>
   <body>
     <div class="container">
-      <div class="row">
+      <div class="row panel panel-default panel-body">
         <div class="col-md-2">
-          <h4>User</h4>
-          <button class="btn btn-default"><i style="font-size:7em" class="fa fa-user"></i></button>
+          <h6>客戶資料</h6><img style="width: 100px" src="images/pt.jpg"/>
         </div>
         <div class="col-md-2">
-          <h4>Info</h4>
-          <p>Id : {{data.id}}</p>
-          <p>Name : {{data.name}}</p>
-          <p>Clinic: {{data.clinic}}</p>
-          <p>Doctor : {{data.doctor}}</p>
+          <h6>資訊</h6>
+          <p>編號 : {{data.id}}</p>
+          <p>姓名 : {{data.name}}</p>
+          <p>診所 : {{data.clinic}}</p>
+          <p>醫師 : {{data.doctor}}</p>
         </div>
-        <div class="col-md-4">
-          <h4>Player options</h4>
-          <div class="btn-group">
-            <button ng-click="lastStep()" class="btn btn-default btn-lg"><i class="fa fa-step-backward fa-fw"></i></button>
-            <button ng-hide="rotate" ng-click="play()" class="btn btn-default btn-lg"><i class="fa fa-play fa-fw"></i></button>
-            <button ng-show="rotate" ng-click="stop()" class="btn btn-default btn-lg"><i class="fa fa-pause fa-fw"></i></button>
-            <button ng-click="init()" class="btn btn-default btn-lg"><i class="fa fa-stop fa-fw"></i></button>
-            <button ng-click="nextStep()" class="btn btn-default btn-lg"><i class="fa fa-step-forward fa-fw"></i></button>
-          </div>
-          <h4>Step: step {{step_anchor}}</h4>
+        <div class="col-md-3">
+          <h6>矯正階段: step {{step_anchor}}</h6>
           <ul style="margin: 0;" class="pagination">
             <li ng-repeat="mesh in meshs"><a href="#" ng-click="showStep($index)">{{$index}}</a></li>
           </ul>
+          <h6>播放選項</h6>
+          <div class="btn-group">
+            <button ng-click="init()" class="btn btn-default"><i class="fa fa-reply fa-fw"></i></button>
+            <button ng-click="lastStep()" class="btn btn-default"><i class="fa fa-step-backward fa-fw"></i></button>
+            <button ng-disabled="playStep" ng-click="play()" class="btn btn-default"><i class="fa fa-play fa-fw"></i></button>
+            <button ng-click="nextStep()" class="btn btn-default"><i class="fa fa-step-forward fa-fw"></i></button>
+          </div>
+          <h6>切換視角</h6>
+          <div class="btn-group">
+            <button ng-click="viewFromFront()" class="btn btn-default btn-sm">Front</button>
+            <button ng-click="viewFromBack()" class="btn btn-default btn-sm">Back</button>
+            <button ng-click="viewFromLeft()" class="btn btn-default btn-sm">Left</button>
+            <button ng-click="viewFromRight()" class="btn btn-default btn-sm">Right</button>
+          </div>
         </div>
-        <div class="col-md-4">
-          <h4>Others options</h4>
-          <button ng-click="init()" class="btn btn-default btn-lg">Initialize</button><a href="demo.pdf" target="_new" class="btn btn-default btn-lg">Open .pdf</a>
-          <h4>Status</h4>{{message}}
+        <div class="col-md-3">
+          <h6>上下顎模式</h6>
+          <div class="btn-group">
+            <button ng-click="toggleTop()" class="btn btn-default btn-sm">toggleTop</button>
+            <button ng-click="toggleBtm()" class="btn btn-default btn-sm">toggleBtm</button>
+          </div>
+          <h6>牙肉分離</h6>
+          <div class="btn-group">
+            <button ng-click="toggleTeeth()" class="btn btn-default btn-sm">toggleTeeth</button>
+            <button ng-click="toggleJaw()" class="btn btn-default btn-sm">toggleJaw</button>
+          </div>
+          <h6>其他選項</h6>
+          <div class="btn-group">
+            <button ng-click="toggleSplit()" class="btn btn-default">張口模式</button><a href="demo.pdf" target="_new" class="btn btn-default">開啟評估文件</a>
+          </div>
         </div>
+        <div class="col-md-2"><img style="width: 140%; margin-left: -40%" src="images/logo.jpg"/></div>
       </div>
-      <hr/>
-      <div class="row">
-        <div class="col-md-8">
+      <div class="row panel panel-default panel-body">
+        <div class="col-md-12">
           <viewer></viewer>
-        </div>
-        <div class="col-md-2">
-          <h4>View Angle</h4>
-          <div class="btn-group-vertical">
-            <button ng-click="viewFromTop()" class="btn btn-default btn-lg">Top</button>
-            <button ng-click="viewFromBottom()" class="btn btn-default btn-lg">Bottom</button>
-            <button ng-click="viewFromFront()" class="btn btn-default btn-lg">Front</button>
-            <button ng-click="viewFromBack()" class="btn btn-default btn-lg">Back</button>
-            <button ng-click="viewFromLeft()" class="btn btn-default btn-lg">Left</button>
-            <button ng-click="viewFromRight()" class="btn btn-default btn-lg">Right</button>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <h4>Show Tooth</h4>
-          <div class="btn-group-vertical">
-            <button ng-click="toggleTop()" class="btn btn-default btn-lg">toggleTop</button>
-            <button ng-click="toggleBtm()" class="btn btn-default btn-lg">toggleBtm</button>
-          </div>
         </div>
       </div>
     </div>
