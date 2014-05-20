@@ -16,7 +16,9 @@ angular.module('angular-3d-viewer')
       scope.showBtm = true;
       scope.showTeeth = true;
       scope.showJaw = true;
+      scope.showSplit = false;
       scope.playStep = false;
+
 
       var meshs = scope.meshs = new Array(scope.step_num);
       for(var i = 0; i < scope.step_num; i+=1) {
@@ -261,32 +263,35 @@ angular.module('angular-3d-viewer')
       }
       
       scope.toggleSplit = function() {
-        scope.init();
-        for(var i = 0; i<meshs.length; i++) {
-          for(var j = 0; j<meshs[i].length; j+=1) {
-            if(meshs[i][j].info.location === 'btm') {
-              meshs[i][j].position.set(0, 0, 0);
-            } else {
-              meshs[i][j].position.set(0, -5, -60);
-              meshs[i][j].rotation.set(-Math.PI, 0, 0);  
+        if(!scope.showSplit) {
+          scope.showSplit = true;
+          scope.init();
+          for(var i = 0; i<meshs.length; i++) {
+            for(var j = 0; j<meshs[i].length; j+=1) {
+              if(meshs[i][j].info.location === 'btm') {
+                meshs[i][j].position.set(0, 0, 0);
+              } else {
+                meshs[i][j].position.set(0, -5, -60);
+                meshs[i][j].rotation.set(-Math.PI, 0, 0);  
+              }
             }
           }
+
+          controls.reset();
+          camera.left = -width / zoom * 2;
+          camera.right = width / zoom * 2;
+          camera.top = height / zoom * 2 +20;
+          camera.bottom = -height / zoom * 2 +20;
+          console.log(camera);
+          camera.position.y = 400;
+          var camTarget = new THREE.Vector3( 0, 0, 0 );
+          camera.lookAt(camTarget);
+          camera.updateProjectionMatrix();
+        } else {
+          scope.showSplit = false;
+          scope.viewFromFront();
         }
-
-        // camera.position.set(0, 200, -50);
-        // var camTarget = new THREE.Vector3( 0, 0, -100 );
-        // camera.lookAt(camTarget);
-
-        controls.reset();
-        camera.left = -width / zoom * 2;
-        camera.right = width / zoom * 2;
-        camera.top = height / zoom * 2 +20;
-        camera.bottom = -height / zoom * 2 +20;
-        console.log(camera);
-        camera.position.y = 400;
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
-        camera.updateProjectionMatrix();
+        
 
       }
 
