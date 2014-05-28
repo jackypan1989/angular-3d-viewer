@@ -12,8 +12,7 @@
     "frame": true,
     "width": 1300,
     "height": 800,
-    "position": "center",
-    "fullscreen" : true
+    "position": "center"
   },
   "webkit": {
     "plugin": true

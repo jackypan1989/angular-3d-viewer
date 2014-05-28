@@ -69,55 +69,53 @@ angular.module('angular-3d-viewer')
         animate();
       }
 
+      // set camera
       function setCamera() {
-        //camera = new THREE.PerspectiveCamera(100, width / height, 1, 10000);
         camera = new THREE.OrthographicCamera( -width / zoom, width / zoom, height / zoom, -height / zoom, -1000, 1000 );
-        // camera = new THREE.CombinedCamera(width / 10, height / 10, 100, width / height, 1, 10000, 0.2, 2000); 
         camera.position.set(0, 0, 100);
         scene.add(camera);
       }
 
+      // set control
       function setControl() {
         controls = new THREE.TrackballControls(camera, dom);
         controls.addEventListener( 'change', render );
       }
 
+      // set light
       function setLight() {
-        var light_color = 0x999999;
+        
+        var light_color = 0x777777;
         var directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = 0; 
-        directionalLight.position.y = 0; 
-        directionalLight.position.z = 1; 
+        directionalLight.position.set(1, 1, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = 0; 
-        directionalLight.position.y = 0; 
-        directionalLight.position.z = -1; 
+        directionalLight.position.set(1, 1, -1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = 0; 
-        directionalLight.position.y = 1; 
-        directionalLight.position.z = 0; 
+        directionalLight.position.set(1, -1, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = 0; 
-        directionalLight.position.y = -1; 
-        directionalLight.position.z = 0; 
+        directionalLight.position.set(-1, 1, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = 1; 
-        directionalLight.position.y = 0; 
-        directionalLight.position.z = 0; 
+        directionalLight.position.set(-1, -1, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.x = -1; 
-        directionalLight.position.y = 0; 
-        directionalLight.position.z = 0; 
+        directionalLight.position.set(1, -1, -1).normalize(); 
+        scene.add( directionalLight );
+
+        directionalLight = new THREE.DirectionalLight( light_color );
+        directionalLight.position.set(-1, 1, -1).normalize(); 
+        scene.add( directionalLight );
+
+        directionalLight = new THREE.DirectionalLight( light_color );
+        directionalLight.position.set(-1, -1, -1).normalize(); 
         scene.add( directionalLight );
       }
 

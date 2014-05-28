@@ -143,7 +143,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'autoprefixer', 'jade']);
 
     // Default task.
-    grunt.registerTask('default', ['build', 'connect', 'watch', 'nodewebkit']);
+    grunt.registerTask('default', ['build', 'connect', 'watch']);
 
     // Package task.
     grunt.registerTask('pack', ['build','nodewebkit']);
