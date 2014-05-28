@@ -1,0 +1,25 @@
+{
+  "main": "index.html",
+  "name": "orthosov",
+  "description": "orthosov teeth viewer",
+  "version": "0.0.1",
+  "keywords": [ "orthosov", "node-webkit" ],
+  "node-remote": "<local>",
+  "window": {
+    "title": "orthosov teeth viewer",
+    "icon": "link.png",
+    "toolbar": false,
+    "frame": true,
+    "width": 1300,
+    "height": 800,
+    "position": "center",
+    "fullscreen" : true
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "dependencies": {
+    "deck":"latest"
+  },
+  "chromium-args": "--enable-webgl --ignore-gpu-blacklist --allow-file-access-from-files"
+}

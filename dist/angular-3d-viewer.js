@@ -1,6 +1,6 @@
 /**
  * Angular 3d Viewer
- * @version v0.0.1 - 2014-05-18
+ * @version v0.0.1 - 2014-05-25
  * @link http://jackypan1989.github.com/angular-3d-viewer
  * @author Guan Yu Pan
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -136,7 +136,8 @@ angular.module('angular-3d-viewer')
           scope.message = 'load model ..';
 
           var geometry = event.content;
-          geometry.computeFaceNormals();
+          geometry.mergeVertices() 
+          geometry.computeVertexNormals();
 
           var mesh;
           if (event.info.type === 'tooth') {
@@ -145,6 +146,7 @@ angular.module('angular-3d-viewer')
               new THREE.MeshLambertMaterial({
                   overdraw:true,
                   color: 0xFFFFFF,
+                  shading: THREE.SmoothShading
               }
             ));
           } else {
@@ -153,6 +155,7 @@ angular.module('angular-3d-viewer')
               new THREE.MeshLambertMaterial({
                   overdraw:true,
                   color: 0xF095B4
+                  //shading: THREE.SmoothShading
               }
             ));
           }
@@ -225,7 +228,6 @@ angular.module('angular-3d-viewer')
       function loadInfo() {
         $http.get('data.json').then(function(result) {
           scope.data = result.data;
-          scope.$apply();
         });
       }
 

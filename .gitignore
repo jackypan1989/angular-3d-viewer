@@ -49,5 +49,6 @@ results
 build
 .grunt
 
+build
 node_modules
 *.stl

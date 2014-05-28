@@ -1,0 +1,12 @@
+{
+    "name": "mean",
+    "version": "0.0.1",
+    "dependencies": {
+        "jquery": "latest",
+        "async": "latest",
+        "bootstrap": "latest",
+        "threejs": "latest",
+        "angular": "latest",
+        "components-font-awesome": "latest"
+    }
+}

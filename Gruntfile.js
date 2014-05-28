@@ -124,6 +124,18 @@ module.exports = function (grunt) {
                     ext: '.html'
                 }]
             }
+        },
+        nodewebkit: {
+            options: {
+                build_dir: './build', // Where the build version of my node-webkit app is saved
+                credits: './public/credits.html',
+                mac_icns: './example/icon.icns', // Path to the Mac icon file
+                mac: true, // We want to build it for mac
+                win: true, // We want to build it for win
+                linux32: false, // We don't need linux32
+                linux64: false, // We don't need linux64
+            },
+            src: ['./src/**/*','./public/**/*'] //'./public/**/*' // Your node-webkit app
         }
     });
 
@@ -131,6 +143,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'autoprefixer', 'jade']);
 
     // Default task.
-    grunt.registerTask('default', ['build', 'connect', 'watch']);
+    grunt.registerTask('default', ['build', 'connect', 'watch', 'nodewebkit']);
 
+    // Package task.
+    grunt.registerTask('pack', ['build','nodewebkit']);
 };

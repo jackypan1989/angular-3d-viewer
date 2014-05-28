@@ -30,6 +30,7 @@
         "grunt-contrib-watch": "*",
         "grunt-contrib-jade": "*",
         "grunt-conventional-changelog": "*",
+        "grunt-node-webkit-builder": "latest",
         "load-grunt-tasks": "~0.3.0",
         "requirejs": "~2.1.11"
     },

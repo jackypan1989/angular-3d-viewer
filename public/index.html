@@ -1,6 +1,7 @@
 
 <html ng-app="myApp">
   <head>
+    <meta charset="utf-8"/>
     <!-- Bootstrap 3.1.1-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <!-- Font Awesome-->
@@ -53,10 +54,10 @@
           </div>
           <h6>其他選項</h6>
           <div class="btn-group">
-            <button ng-click="toggleSplit()" class="btn btn-default">張口模式</button><a href="demo.pdf" target="_new" class="btn btn-default">開啟評估文件</a>
+            <button ng-click="toggleSplit()" class="btn btn-default">張口模式</button><a href="demo.pdf" target="_new" class="btn btn-default">開啟評估文件</a><a href="javascript:window.close();" class="btn btn-default btn-sm">關閉視窗</a>
           </div>
         </div>
-        <div class="col-md-2"><img style="width: 140%; margin-left: -40%" src="images/logo.jpg"/></div>
+        <div class="col-md-2"><img style="width: 120%; margin-left: -20%" src="images/logo.jpg"/></div>
       </div>
       <div class="row panel panel-default panel-body">
         <div class="col-md-12">
@@ -65,20 +66,19 @@
       </div>
     </div>
     <!-- jQuery-->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/async/0.7.0/async.js"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/async/lib/async.js"></script>
     <!-- Bootstrap-->
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Three.JS r61-->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r66/three.min.js"></script>
     <!-- AngularJS 1.2.10-->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.10/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.js"></script>
     <!-- Loader for the jeep-->
     <script src="loaders/STLLoader.js"></script>
     <script src="controls/TrackballControls.js"></script>
     <!-- angular-threejs-viewer-->
-    <script src="../src/main.js"></script>
-    <script src="../src/directives/angular-3d-viewer.js"></script>
+    <script src="angular-3d-viewer.js"></script>
     <!-- Demo app logic-->
     <script src="app.js"></script>
   </body>
