@@ -1,6 +1,6 @@
 /**
  * Angular 3d Viewer
- * @version v0.0.1 - 2014-05-28
+ * @version v0.0.1 - 2014-06-07
  * @link http://jackypan1989.github.com/angular-3d-viewer
  * @author Guan Yu Pan
  * @license MIT License, http://www.opensource.org/licenses/MIT

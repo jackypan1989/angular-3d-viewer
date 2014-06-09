@@ -5,8 +5,10 @@
         "jquery": "latest",
         "async": "latest",
         "bootstrap": "latest",
-        "threejs": "latest",
+        "threejs": "r66",
         "angular": "latest",
-        "components-font-awesome": "latest"
+        "components-font-awesome": "latest",
+        "dat-gui": "latest",
+        "angular-kendo": "latest"
     }
 }
