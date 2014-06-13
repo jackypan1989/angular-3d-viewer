@@ -1,4 +1,4 @@
-angular.module('angular-3d-viewer',[]);
+angular.module('angular-3d-viewer',['kendo.directives']);
 angular.module('angular-3d-viewer')
   .directive('viewer', function($http, $timeout) {
   return {
@@ -7,7 +7,7 @@ angular.module('angular-3d-viewer')
     template: '<canvas id="mainCanvas"></canvas>',
     link: function (scope, element, attrs) {
       var dom = document.getElementById('mainCanvas');
-
+      
       scope.step_anchor = 0;
       scope.step_num = 4;
       scope.data = {};
@@ -20,16 +20,21 @@ angular.module('angular-3d-viewer')
       scope.showSplit = false;
       scope.playStep = false;
 
-
       var meshs = scope.meshs = new Array(scope.step_num);
       for(var i = 0; i < scope.step_num; i+=1) {
         meshs[i] = [];
       }
 
       var renderer, projector, scene, camera, controls, loader;
-      var width = 1600;
-      var height = 900;
+      var width = window.innerWidth * 0.75;
+      var height = window.innerHeight;
       var zoom = 25;
+
+      // scope.$watch('camera', function(newValue, oldValue) {
+      //   scope.
+      // });
+
+
 
       function init() {
         projector = new THREE.Projector();
@@ -73,6 +78,11 @@ angular.module('angular-3d-viewer')
       function setCamera() {
         camera = new THREE.OrthographicCamera( -width / zoom, width / zoom, height / zoom, -height / zoom, -1000, 1000 );
         camera.position.set(0, 0, 100);
+        scope.camera = {
+          top: camera.top
+        };
+
+        console.log(camera);
         scene.add(camera);
       }
 
@@ -168,17 +178,17 @@ angular.module('angular-3d-viewer')
         for (var i = 0; i<scope.step_num ;i+=1) {
           // load top tooth
           for (var j = 1; j<=16; j+=1) {
-            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
           }
 
           // load btm tooth
           for (var j = 17; j<=32; j+=1) {
-            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
           }
 
           // load jaw
-          loader.load('./models/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-          loader.load('./models/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+          loader.load('./data/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+          loader.load('./data/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
         }
 
         // for (var i = 0; i<4 ;i+=1) {
@@ -215,7 +225,7 @@ angular.module('angular-3d-viewer')
       // }
 
       function loadInfo() {
-        $http.get('data.json').then(function(result) {
+        $http.get('data/profile.json').then(function(result) {
           scope.data = result.data;
         });
       }

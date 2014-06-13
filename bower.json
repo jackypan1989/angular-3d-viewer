@@ -8,7 +8,7 @@
         "threejs": "r66",
         "angular": "latest",
         "components-font-awesome": "latest",
-        "dat-gui": "latest",
+        "kendo-ui": "latest",
         "angular-kendo": "latest"
     }
 }

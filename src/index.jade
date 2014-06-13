@@ -5,79 +5,136 @@ html(ng-app='myApp')
     link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
     // Font Awesome
     link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
-
+    // 
+    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.common.core.min.css')
+    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
+    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
+    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
     link(rel='stylesheet', href='demo.css')
-  body
+  body(ng-controller='myCtrl')
     .container
-      .row.panel.panel-default.panel-body
-        .col-md-2
-          h6 客戶資料
-          img(style='width: 100px', src='images/pt.jpg')
-        .col-md-2
-          h6 資訊
-          p 編號 : {{data.id}}
-          p 姓名 : {{data.name}}
-          p 診所 : {{data.clinic}}
-          p 醫師 : {{data.doctor}}
-        .col-md-3
-          h6 矯正階段: step {{step_anchor}}
-          ul.pagination(style='margin: 0;')
-            li(ng-repeat='mesh in meshs') 
-              a(href='#', ng-click='showStep($index)') {{$index}}
-          h6 播放選項
-          .btn-group
-            button.btn.btn-default(ng-click='init()')
-              i.fa.fa-reply.fa-fw
-            button.btn.btn-default(ng-click='lastStep()')
-              i.fa.fa-step-backward.fa-fw
-            button.btn.btn-default(ng-disabled='playStep', ng-click='play()')
-              i.fa.fa-play.fa-fw
-            //- button.btn.btn-default(ng-show='playStep',ng-click='stop()')
-            //-   i.fa.fa-pause.fa-fw
-            button.btn.btn-default(ng-click='nextStep()')
-              i.fa.fa-step-forward.fa-fw
-          h6 切換視角
-          .btn-group
-            button.btn.btn-default.btn-sm(ng-click='viewFromFront()') Front
-            button.btn.btn-default.btn-sm(ng-click='viewFromBack()') Back
-            button.btn.btn-default.btn-sm(ng-click='viewFromLeft()') Left
-            button.btn.btn-default.btn-sm(ng-click='viewFromRight()') Right
-            //- button.btn.btn-default.btn-sm(ng-click='viewFromTop()') Top
-            //- button.btn.btn-default.btn-sm(ng-click='viewFromBottom()') Bottom
-        .col-md-3
-          h6 上下顎模式
-          .btn-group
-            button.btn.btn-default.btn-sm(ng-click='toggleTop()') toggleTop
-            button.btn.btn-default.btn-sm(ng-click='toggleBtm()') toggleBtm
-          h6 牙肉分離
-          .btn-group
-            button.btn.btn-default.btn-sm(ng-click='toggleTeeth()') toggleTeeth
-            button.btn.btn-default.btn-sm(ng-click='toggleJaw()') toggleJaw
-          h6 其他選項
-          .btn-group
-            button.btn.btn-default(ng-click='toggleSplit()')
-              | 張口模式
-            a.btn.btn-default(href='demo.pdf', target='_new')
-              | 開啟評估文件
-        .col-md-2
-          img(style='width: 120%; margin-left: -20%', src='images/logo.jpg')
-      .row.panel.panel-default.panel-body
-        .col-md-12
-          viewer
+      ul(kendo-menu k-orientation='horizontal')
+        li 檔案
+          ul 
+            li(ng-click='profilePanel.open()') 病患資料
+            li 
+              a(href='data/analysis.pdf', target='_new') 評估文件
+            li 離開
+        li 播放 
+          ul
+            li(ng-click='init()') 最初階段
+            li(ng-click='lastStep()') 上一階段
+            li(ng-click='nextStep()') 下一階段
+            li(ng-click='viewFromRight()') 最後階段
+            li(ng-click='play()') 播放
+        li 上下顎
+          ul
+            li(ng-click='toggleTop()')
+              i.fa.fa-check(ng-show='showTop')
+              | 上顎
+            li(ng-click='toggleBtm()')
+              i.fa.fa-check(ng-show='showBtm')
+              | 下顎
+        li 牙肉分離
+          ul
+            li(ng-click='toggleTeeth()')
+              i.fa.fa-check(ng-show='showTeeth')
+              | 牙齒
+            li(ng-click='toggleJaw()') 
+              i.fa.fa-check(ng-show='showJaw')
+              | 牙肉
+        li 視角 
+          ul
+            li(ng-click='viewFromFront()') 前視角
+            li(ng-click='viewFromBack()') 後視角
+            li(ng-click='viewFromLeft()') 左視角
+            li(ng-click='viewFromRight()') 右視角
+            li(ng-click='viewFromTop()') 上視角
+            li(ng-click='viewFromButtom()') 下視角
+        li 特殊
+          ul
+            li(ng-click='toggleSplit()') 張口模式
+            li 剖面模式
+      div(kendo-window='profilePanel', k-title="'客戶資料'", k-resizable='false', k-visible="false", k-on-open="profilePanel = true", k-on-close="profilePanel = false")
+        img(style='width: 100px', src='images/pt.jpg')
+        p 編號 : {{data.id}}
+        p 姓名 : {{data.name}}
+        p 診所 : {{data.clinic}}
+        p 醫師 : {{data.doctor}}
         
+
+      //- button(class="k-button", ng-click="panel1.open()")
+      //-   | User Data
+      //- div(kendo-window="panel1", ng-show="panel", k-title="'Calendar'", k-on-open="panel = true", k-on-close="panel = false")
+      //-   .row.panel.panel-default.panel-body
+      //-     .col-md-2
+      //-       h6 客戶資料
+      //-       img(style='width: 100px', src='images/pt.jpg')
+      //-     .col-md-2
+      //-       h6 資訊
+      //-       p 編號 : {{data.id}}
+      //-       p 姓名 : {{data.name}}
+      //-       p 診所 : {{data.clinic}}
+      //-       p 醫師 : {{data.doctor}}
+      //-     .col-md-3
+      //-       h6 矯正階段: step {{step_anchor}}
+      //-       ul.pagination(style='margin: 0;')
+      //-         li(ng-repeat='mesh in meshs') 
+      //-           a(href='#', ng-click='showStep($index)') {{$index}}
+      //-       h6 播放選項
+      //-       .btn-group
+      //-         button.btn.btn-default(ng-click='init()')
+      //-           i.fa.fa-reply.fa-fw
+      //-         button.btn.btn-default(ng-click='lastStep()')
+      //-           i.fa.fa-step-backward.fa-fw
+      //-         button.btn.btn-default(ng-disabled='playStep', ng-click='play()')
+      //-           i.fa.fa-play.fa-fw
+      //-         //- button.btn.btn-default(ng-show='playStep',ng-click='stop()')
+      //-         //-   i.fa.fa-pause.fa-fw
+      //-         button.btn.btn-default(ng-click='nextStep()')
+      //-           i.fa.fa-step-forward.fa-fw
+      //-       h6 切換視角
+      //-       .btn-group
+      //-         button.btn.btn-default.btn-sm(ng-click='viewFromFront()') Front
+      //-         button.btn.btn-default.btn-sm(ng-click='viewFromBack()') Back
+      //-         button.btn.btn-default.btn-sm(ng-click='viewFromLeft()') Left
+      //-         button.btn.btn-default.btn-sm(ng-click='viewFromRight()') Right
+      //-         //- button.btn.btn-default.btn-sm(ng-click='viewFromTop()') Top
+      //-         //- button.btn.btn-default.btn-sm(ng-click='viewFromBottom()') Bottom
+      //-     .col-md-3
+      //-       h6 上下顎模式
+      //-       .btn-group
+      //-         button.btn.btn-default.btn-sm(ng-click='toggleTop()') toggleTop
+      //-         button.btn.btn-default.btn-sm(ng-click='toggleBtm()') toggleBtm
+      //-       h6 牙肉分離
+      //-       .btn-group
+      //-         button.btn.btn-default.btn-sm(ng-click='toggleTeeth()') toggleTeeth
+      //-         button.btn.btn-default.btn-sm(ng-click='toggleJaw()') toggleJaw
+      //-       h6 其他選項
+      //-       .btn-group
+      //-         button.btn.btn-default(ng-click='toggleSplit()')
+      //-           | 張口模式
+      //-         a.btn.btn-default(href='data/analysis.pdf', target='_new')
+      //-           | 開啟評估文件
+      //-     .col-md-2
+      //-       img(style='width: 120%; margin-left: -20%', src='images/logo.jpg')
+      viewer
+      div {{camera}}
+
     // jQuery
-    script(src='lib/jquery/dist/jquery.min.js')
+    script(src='lib/jquery/jquery.min.js')
+    // async
     script(src='lib/async/lib/async.js')
     // Bootstrap
     script(src='lib/bootstrap/dist/js/bootstrap.min.js')
-    // Three.JS r61
+    // Three.JS r66
     script(src='lib/threejs/build/three.min.js')
-    // AngularJS 1.2.10
+    // AngularJS
     script(src='lib/angular/angular.min.js')
-
-    script(src='lib/dat-gui/build/dat.gui.min.js')
-      
-    // Loader for the jeep
+    // Angular-Kendo
+    script(src='lib/kendo-ui/js/kendo.ui.core.min.js')
+    script(src='lib/angular-kendo/build/angular-kendo.min.js')
+    // Loader & controls
     script(src='loaders/STLLoader.js')
     script(src='controls/TrackballControls.js')
     // angular-threejs-viewer

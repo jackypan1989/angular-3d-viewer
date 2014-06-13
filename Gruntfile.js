@@ -140,7 +140,7 @@ module.exports = function (grunt) {
     });
 
     // Build task.
-    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'autoprefixer', 'jade']);
+    grunt.registerTask('build', ['jshint', 'concat', 'uglify', 'jade']);
 
     // Default task.
     grunt.registerTask('default', ['build', 'connect', 'watch']);

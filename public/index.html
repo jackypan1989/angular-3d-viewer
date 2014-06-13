@@ -6,76 +6,84 @@
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
     <!-- Font Awesome-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
+    <!-- -->
+    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.common.core.min.css"/>
+    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
+    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
+    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
     <link rel="stylesheet" href="demo.css"/>
   </head>
-  <body>
+  <body ng-controller="myCtrl">
     <div class="container">
-      <div class="row panel panel-default panel-body">
-        <div class="col-md-2">
-          <h6>客戶資料</h6><img style="width: 100px" src="images/pt.jpg"/>
-        </div>
-        <div class="col-md-2">
-          <h6>資訊</h6>
-          <p>編號 : {{data.id}}</p>
-          <p>姓名 : {{data.name}}</p>
-          <p>診所 : {{data.clinic}}</p>
-          <p>醫師 : {{data.doctor}}</p>
-        </div>
-        <div class="col-md-3">
-          <h6>矯正階段: step {{step_anchor}}</h6>
-          <ul style="margin: 0;" class="pagination">
-            <li ng-repeat="mesh in meshs"><a href="#" ng-click="showStep($index)">{{$index}}</a></li>
+      <ul kendo-menu="kendo-menu" k-orientation="horizontal">
+        <li>檔案
+          <ul>
+            <li ng-click="profilePanel.open()">病患資料</li>
+            <li><a href="data/analysis.pdf" target="_new">評估文件</a></li>
+            <li>離開</li>
           </ul>
-          <h6>播放選項</h6>
-          <div class="btn-group">
-            <button ng-click="init()" class="btn btn-default"><i class="fa fa-reply fa-fw"></i></button>
-            <button ng-click="lastStep()" class="btn btn-default"><i class="fa fa-step-backward fa-fw"></i></button>
-            <button ng-disabled="playStep" ng-click="play()" class="btn btn-default"><i class="fa fa-play fa-fw"></i></button>
-            <button ng-click="nextStep()" class="btn btn-default"><i class="fa fa-step-forward fa-fw"></i></button>
-          </div>
-          <h6>切換視角</h6>
-          <div class="btn-group">
-            <button ng-click="viewFromFront()" class="btn btn-default btn-sm">Front</button>
-            <button ng-click="viewFromBack()" class="btn btn-default btn-sm">Back</button>
-            <button ng-click="viewFromLeft()" class="btn btn-default btn-sm">Left</button>
-            <button ng-click="viewFromRight()" class="btn btn-default btn-sm">Right</button>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <h6>上下顎模式</h6>
-          <div class="btn-group">
-            <button ng-click="toggleTop()" class="btn btn-default btn-sm">toggleTop</button>
-            <button ng-click="toggleBtm()" class="btn btn-default btn-sm">toggleBtm</button>
-          </div>
-          <h6>牙肉分離</h6>
-          <div class="btn-group">
-            <button ng-click="toggleTeeth()" class="btn btn-default btn-sm">toggleTeeth</button>
-            <button ng-click="toggleJaw()" class="btn btn-default btn-sm">toggleJaw</button>
-          </div>
-          <h6>其他選項</h6>
-          <div class="btn-group">
-            <button ng-click="toggleSplit()" class="btn btn-default">張口模式</button><a href="demo.pdf" target="_new" class="btn btn-default">開啟評估文件</a>
-          </div>
-        </div>
-        <div class="col-md-2"><img style="width: 120%; margin-left: -20%" src="images/logo.jpg"/></div>
+        </li>
+        <li>播放 
+          <ul>
+            <li ng-click="init()">最初階段</li>
+            <li ng-click="lastStep()">上一階段</li>
+            <li ng-click="nextStep()">下一階段</li>
+            <li ng-click="viewFromRight()">最後階段</li>
+            <li ng-click="play()">播放</li>
+          </ul>
+        </li>
+        <li>上下顎
+          <ul>
+            <li ng-click="toggleTop()"><i ng-show="showTop" class="fa fa-check"></i>上顎</li>
+            <li ng-click="toggleBtm()"><i ng-show="showBtm" class="fa fa-check"></i>下顎</li>
+          </ul>
+        </li>
+        <li>牙肉分離
+          <ul>
+            <li ng-click="toggleTeeth()"><i ng-show="showTeeth" class="fa fa-check"></i>牙齒</li>
+            <li ng-click="toggleJaw()"><i ng-show="showJaw" class="fa fa-check"></i>牙肉</li>
+          </ul>
+        </li>
+        <li>視角 
+          <ul>
+            <li ng-click="viewFromFront()">前視角</li>
+            <li ng-click="viewFromBack()">後視角</li>
+            <li ng-click="viewFromLeft()">左視角</li>
+            <li ng-click="viewFromRight()">右視角</li>
+            <li ng-click="viewFromTop()">上視角</li>
+            <li ng-click="viewFromButtom()">下視角</li>
+          </ul>
+        </li>
+        <li>特殊
+          <ul>
+            <li ng-click="toggleSplit()">張口模式</li>
+            <li>剖面模式</li>
+          </ul>
+        </li>
+      </ul>
+      <div kendo-window="profilePanel" k-title="'客戶資料'" k-resizable="false" k-visible="false" k-on-open="profilePanel = true" k-on-close="profilePanel = false"><img style="width: 100px" src="images/pt.jpg"/>
+        <p>編號 : {{data.id}}</p>
+        <p>姓名 : {{data.name}}</p>
+        <p>診所 : {{data.clinic}}</p>
+        <p>醫師 : {{data.doctor}}</p>
       </div>
-      <div class="row panel panel-default panel-body">
-        <div class="col-md-12">
-          <viewer></viewer>
-        </div>
-      </div>
+      <viewer></viewer>
+      <div>{{camera}}</div>
     </div>
     <!-- jQuery-->
-    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script src="lib/jquery/jquery.min.js"></script>
+    <!-- async-->
     <script src="lib/async/lib/async.js"></script>
     <!-- Bootstrap-->
     <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Three.JS r61-->
+    <!-- Three.JS r66-->
     <script src="lib/threejs/build/three.min.js"></script>
-    <!-- AngularJS 1.2.10-->
+    <!-- AngularJS-->
     <script src="lib/angular/angular.min.js"></script>
-    <script src="lib/dat-gui/build/dat.gui.min.js"></script>
-    <!-- Loader for the jeep-->
+    <!-- Angular-Kendo-->
+    <script src="lib/kendo-ui/js/kendo.ui.core.min.js"></script>
+    <script src="lib/angular-kendo/build/angular-kendo.min.js"></script>
+    <!-- Loader & controls-->
     <script src="loaders/STLLoader.js"></script>
     <script src="controls/TrackballControls.js"></script>
     <!-- angular-threejs-viewer-->

@@ -169,54 +169,22 @@ angular.module('angular-3d-viewer')
         for (var i = 0; i<scope.step_num ;i+=1) {
           // load top tooth
           for (var j = 1; j<=16; j+=1) {
-            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
           }
 
           // load btm tooth
           for (var j = 17; j<=32; j+=1) {
-            loader.load('./models/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
           }
 
           // load jaw
-          loader.load('./models/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-          loader.load('./models/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+          loader.load('./data/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+          loader.load('./data/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
         }
-
-        // for (var i = 0; i<4 ;i+=1) {
-        //   // load top tooth
-        //   for (var j = 1; j<=16; j+=1) {
-        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
-        //   }
-
-        //   // load btm tooth
-        //   for (var j = 17; j<=32; j+=1) {
-        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
-        //   }
-
-        //   // load jaw
-        //   loader.load('./models/stage'+i+'/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-        //   loader.load('./models/stage'+i+'/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
-        // }
       }
 
-      // function onDocumentDblclick( event ) {
-
-      //   alert(event.clientX);
-      //   event.preventDefault();
-
-      //   var vector = new THREE.Vector3( ( event.clientX / width ) * 2 - 1, - ( event.clientY / height ) * 2 + 1, 0.5 );
-      //   var ray = projector.pickingRay( vector, camera );
-
-      //   var intersects = ray.intersectObjects( meshs[scope.step_anchor] );
-
-      //   if ( intersects.length > 0 ) {
-      //     intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-      //   }
-
-      // }
-
       function loadInfo() {
-        $http.get('data.json').then(function(result) {
+        $http.get('data/profile.json').then(function(result) {
           scope.data = result.data;
         });
       }

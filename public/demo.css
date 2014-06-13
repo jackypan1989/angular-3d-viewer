@@ -1,5 +1,5 @@
 body {
-    background:url(images/01.jpg);
+    /*background:url(images/01.jpg);*/
     background-attachment: fixed;
     -moz-background-size:100%;
     -webkit-background-size:100%;
@@ -27,4 +27,8 @@ canvas {
     -moz-box-shadow: 1px 1px 3px #333;
     -webkit-box-shadow: 1px 1px 3px #333;
     box-shadow: 1px 1px 3px #333;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }
