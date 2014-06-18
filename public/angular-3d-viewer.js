@@ -9,7 +9,7 @@ angular.module('angular-3d-viewer')
       var dom = document.getElementById('mainCanvas');
       
       scope.step_anchor = 0;
-      scope.step_num = 4;
+      scope.step_num = profile.step_num;
       scope.data = {};
       scope.rotate = false;
       scope.message = 'Initialize canvas...';
@@ -28,13 +28,7 @@ angular.module('angular-3d-viewer')
       var renderer, projector, scene, camera, controls, loader;
       var width = window.innerWidth * 0.75;
       var height = window.innerHeight;
-      var zoom = 25;
-
-      // scope.$watch('camera', function(newValue, oldValue) {
-      //   scope.
-      // });
-
-
+      var zoom = 15;
 
       function init() {
         projector = new THREE.Projector();
@@ -49,25 +43,6 @@ angular.module('angular-3d-viewer')
         setLight();
         setAxes();
         setLoader();
-        
-        // var gridXZ = new THREE.GridHelper(1000, 100);
-        // gridXZ.setColors( new THREE.Color(0x006600), new THREE.Color(0x006600) );
-        // gridXZ.position.set( 500,0,500 );
-        // scene.add(gridXZ);
-        
-        // var gridXY = new THREE.GridHelper(1000, 100);
-        // gridXY.position.set( 500,500,0 );
-        // gridXY.rotation.x = Math.PI/2;
-        // gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
-        // scene.add(gridXY);
-
-        // var gridYZ = new THREE.GridHelper(1000, 100);
-        // gridYZ.position.set( 0,500,500 );
-        // gridYZ.rotation.z = Math.PI/2;
-        // gridYZ.setColors( new THREE.Color(0x660000), new THREE.Color(0x660000) );
-        // scene.add(gridYZ);        
-
-        // dom.addEventListener( 'dblclick', onDocumentDblclick, false );
 
         loadInfo();
         load();
@@ -76,13 +51,8 @@ angular.module('angular-3d-viewer')
 
       // set camera
       function setCamera() {
-        camera = new THREE.OrthographicCamera( -width / zoom, width / zoom, height / zoom, -height / zoom, -1000, 1000 );
-        camera.position.set(0, 0, 100);
-        scope.camera = {
-          top: camera.top
-        };
-
-        console.log(camera);
+        scope.camera = camera = new THREE.OrthographicCamera( -width / zoom, width / zoom, height / zoom, -height / zoom, -1000, 1000 );
+        camera.position.set(0, 0, 75);
         scene.add(camera);
       }
 
@@ -94,18 +64,22 @@ angular.module('angular-3d-viewer')
 
       // set light
       function setLight() {
-        
-        var light_color = 0x777777;
+        var flashlight = new THREE.SpotLight(0x999999);
+        flashlight.position.set(0,0,100);
+        flashlight.target = camera;
+        camera.add(flashlight)
+
+        var light_color = 0x3A3A3A;
         var directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(1, 1, 1).normalize(); 
+        directionalLight.position.set(0, 1, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(1, 1, -1).normalize(); 
+        directionalLight.position.set(0, 1, -1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(1, -1, 1).normalize(); 
+        directionalLight.position.set(1, -2, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
@@ -113,11 +87,11 @@ angular.module('angular-3d-viewer')
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(-1, -1, 1).normalize(); 
+        directionalLight.position.set(-1, -2, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(1, -1, -1).normalize(); 
+        directionalLight.position.set(1, -2, -1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
@@ -144,7 +118,7 @@ angular.module('angular-3d-viewer')
               geometry,
               new THREE.MeshLambertMaterial({
                   overdraw:true,
-                  color: 0xFFFFFF,
+                  color: 0xDDDDDD,
                   shading: THREE.SmoothShading
               }
             ));
@@ -153,7 +127,7 @@ angular.module('angular-3d-viewer')
               geometry,
               new THREE.MeshLambertMaterial({
                   overdraw:true,
-                  color: 0xF095B4,
+                  color: 0xBF6969, //804040
                   shading: THREE.SmoothShading
               }
             ));
@@ -190,44 +164,10 @@ angular.module('angular-3d-viewer')
           loader.load('./data/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
           loader.load('./data/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
         }
-
-        // for (var i = 0; i<4 ;i+=1) {
-        //   // load top tooth
-        //   for (var j = 1; j<=16; j+=1) {
-        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
-        //   }
-
-        //   // load btm tooth
-        //   for (var j = 17; j<=32; j+=1) {
-        //     loader.load('./models/stage'+i+'/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
-        //   }
-
-        //   // load jaw
-        //   loader.load('./models/stage'+i+'/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-        //   loader.load('./models/stage'+i+'/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
-        // }
       }
 
-      // function onDocumentDblclick( event ) {
-
-      //   alert(event.clientX);
-      //   event.preventDefault();
-
-      //   var vector = new THREE.Vector3( ( event.clientX / width ) * 2 - 1, - ( event.clientY / height ) * 2 + 1, 0.5 );
-      //   var ray = projector.pickingRay( vector, camera );
-
-      //   var intersects = ray.intersectObjects( meshs[scope.step_anchor] );
-
-      //   if ( intersects.length > 0 ) {
-      //     intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-      //   }
-
-      // }
-
       function loadInfo() {
-        $http.get('data/profile.json').then(function(result) {
-          scope.data = result.data;
-        });
+        scope.profile = profile;
       }
 
       function animate() {
@@ -245,6 +185,7 @@ angular.module('angular-3d-viewer')
       }
 
       function render() {
+        
         renderer.render(scene, camera);
       }
 
@@ -274,79 +215,66 @@ angular.module('angular-3d-viewer')
       }
       
       scope.toggleSplit = function() {
-        if(!scope.showSplit) {
-          scope.showSplit = true;
-          scope.init();
-          for(var i = 0; i<meshs.length; i++) {
-            for(var j = 0; j<meshs[i].length; j+=1) {
-              if(meshs[i][j].info.location === 'btm') {
-                meshs[i][j].position.set(0, 0, 0);
-              } else {
-                meshs[i][j].position.set(0, -5, -60);
-                meshs[i][j].rotation.set(-Math.PI, 0, 0);  
-              }
+        scope.showSplit = true;
+        scope.init();
+        for(var i = 0; i<meshs.length; i++) {
+          for(var j = 0; j<meshs[i].length; j+=1) {
+            if(meshs[i][j].info.location === 'btm') {
+              meshs[i][j].position.set(0, 0, 0);
+            } else {
+              meshs[i][j].position.set(0, -5, -60);
+              meshs[i][j].rotation.set(-Math.PI, 0, 0);  
             }
           }
-
-          controls.reset();
-          camera.left = -width / zoom * 2;
-          camera.right = width / zoom * 2;
-          camera.top = height / zoom * 2 +20;
-          camera.bottom = -height / zoom * 2 +20;
-          console.log(camera);
-          camera.position.y = 400;
-          var camTarget = new THREE.Vector3( 0, 0, 0 );
-          camera.lookAt(camTarget);
-          camera.updateProjectionMatrix();
-        } else {
-          scope.showSplit = false;
-          scope.viewFromFront();
         }
-        
 
+        controls.reset();
+        camera.left = -width / zoom * 2;
+        camera.right = width / zoom * 2;
+        camera.top = height / zoom * 2 +20;
+        camera.bottom = -height / zoom * 2 +20;
+        camera.position.y = 400;
+        var camTarget = new THREE.Vector3( 0, 0, 0 );
+        camera.lookAt(camTarget);
+        camera.updateProjectionMatrix();
       }
 
       scope.viewFromTop = function() {
-        scope.init();
         controls.reset();
-        camera.position.set(5, 75, 5);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        camera.up = new THREE.Vector3(0, 0, 1);
+        controls.object.position.set(0, 75, 0);
+        camera.lookAt(controls.target);
       }
 
       scope.viewFromBottom = function() {
-        scope.init();
-        camera.position.set(5, -75, 5);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        controls.reset();
+        camera.up = new THREE.Vector3(0, 0, 1);
+        controls.object.position.set(0, -75, 0);
+        camera.lookAt(controls.target);
       }
 
       scope.viewFromFront = function() {
-        scope.init();
-        camera.position.set(0, 0, 75);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        controls.reset();
+        controls.object.position.set(0, 0, 75);
+        camera.lookAt(controls.target);
       }
 
       scope.viewFromBack = function() {
-        scope.init();
-        camera.position.set(0, 0, -75);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        controls.reset();
+        controls.object.position.set(0, 0, -75);
+        camera.lookAt(controls.target);
       }
 
       scope.viewFromLeft = function() {
-        scope.init();
-        camera.position.set(-75, 0, 0);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        controls.reset();
+        controls.object.position.set(-75, 0, 0);
+        camera.lookAt(controls.target);
       }
 
       scope.viewFromRight = function() {
-        scope.init();
-        camera.position.set(75, 0, 0);
-        var camTarget = new THREE.Vector3( 0, 0, 0 );
-        camera.lookAt(camTarget);
+        controls.reset();
+        controls.object.position.set(75, 0, 0);
+        camera.lookAt(controls.target);
       }
 
       scope.showStep = function(step) {

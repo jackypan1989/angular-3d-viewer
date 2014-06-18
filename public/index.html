@@ -12,6 +12,28 @@
     <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
     <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
     <link rel="stylesheet" href="demo.css"/>
+    <!-- setting-->
+    <script src="data/profile.js"></script>
+    <!-- jQuery-->
+    <script src="lib/jquery/jquery.min.js"></script>
+    <!-- async-->
+    <script src="lib/async/lib/async.js"></script>
+    <!-- Bootstrap-->
+    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Three.JS r66-->
+    <script src="lib/threejs/build/three.min.js"></script>
+    <!-- AngularJS-->
+    <script src="lib/angular/angular.min.js"></script>
+    <!-- Angular-Kendo-->
+    <script src="lib/kendo-ui/js/kendo.ui.core.min.js"></script>
+    <script src="lib/angular-kendo/build/angular-kendo.min.js"></script>
+    <!-- Loader & controls-->
+    <script src="loaders/STLLoader.js"></script>
+    <script src="controls/TrackballControls.js"></script>
+    <!-- angular-threejs-viewer-->
+    <script src="angular-3d-viewer.js"></script>
+    <!-- Demo app logic-->
+    <script src="app.js"></script>
   </head>
   <body ng-controller="myCtrl">
     <div class="container">
@@ -51,44 +73,31 @@
             <li ng-click="viewFromLeft()">左視角</li>
             <li ng-click="viewFromRight()">右視角</li>
             <li ng-click="viewFromTop()">上視角</li>
-            <li ng-click="viewFromButtom()">下視角</li>
+            <li ng-click="viewFromBottom()">下視角</li>
           </ul>
         </li>
         <li>特殊
           <ul>
+            <li ng-click="init()">標準模式</li>
             <li ng-click="toggleSplit()">張口模式</li>
             <li>剖面模式</li>
           </ul>
         </li>
+        <li><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=someone@gmail.com&amp;su=subject_here&amp;body=body_here" target="_new">回信</a></li>
       </ul>
+      <div>
+        <ul style="margin: 0;" class="pagination">
+          <li ng-repeat="mesh in meshs"><a ng-show="$first" href="#" ng-click="showStep($index)">Origin</a><a ng-show="!$first &amp;&amp; !$last" href="#" ng-click="showStep($index)">{{$index}}</a><a ng-show="$last" href="#" ng-click="showStep($index)">Final</a></li>
+        </ul>
+      </div>
+      <div>step {{step_anchor}} : {{profile.analysis[step_anchor]}}</div>
       <div kendo-window="profilePanel" k-title="'客戶資料'" k-resizable="false" k-visible="false" k-on-open="profilePanel = true" k-on-close="profilePanel = false"><img style="width: 100px" src="images/pt.jpg"/>
-        <p>編號 : {{data.id}}</p>
-        <p>姓名 : {{data.name}}</p>
-        <p>診所 : {{data.clinic}}</p>
-        <p>醫師 : {{data.doctor}}</p>
+        <p>編號 : {{profile.id}}</p>
+        <p>姓名 : {{profile.name}}</p>
+        <p>診所 : {{profile.clinic}}</p>
+        <p>醫師 : {{profile.doctor}}</p>
       </div>
       <viewer></viewer>
-      <div>{{camera}}</div>
     </div>
-    <!-- jQuery-->
-    <script src="lib/jquery/jquery.min.js"></script>
-    <!-- async-->
-    <script src="lib/async/lib/async.js"></script>
-    <!-- Bootstrap-->
-    <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Three.JS r66-->
-    <script src="lib/threejs/build/three.min.js"></script>
-    <!-- AngularJS-->
-    <script src="lib/angular/angular.min.js"></script>
-    <!-- Angular-Kendo-->
-    <script src="lib/kendo-ui/js/kendo.ui.core.min.js"></script>
-    <script src="lib/angular-kendo/build/angular-kendo.min.js"></script>
-    <!-- Loader & controls-->
-    <script src="loaders/STLLoader.js"></script>
-    <script src="controls/TrackballControls.js"></script>
-    <!-- angular-threejs-viewer-->
-    <script src="angular-3d-viewer.js"></script>
-    <!-- Demo app logic-->
-    <script src="app.js"></script>
   </body>
 </html>

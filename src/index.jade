@@ -11,6 +11,28 @@ html(ng-app='myApp')
     link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
     link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
     link(rel='stylesheet', href='demo.css')
+    // setting
+    script(src='data/profile.js')
+    // jQuery
+    script(src='lib/jquery/jquery.min.js')
+    // async
+    script(src='lib/async/lib/async.js')
+    // Bootstrap
+    script(src='lib/bootstrap/dist/js/bootstrap.min.js')
+    // Three.JS r66
+    script(src='lib/threejs/build/three.min.js')
+    // AngularJS
+    script(src='lib/angular/angular.min.js')
+    // Angular-Kendo
+    script(src='lib/kendo-ui/js/kendo.ui.core.min.js')
+    script(src='lib/angular-kendo/build/angular-kendo.min.js')
+    // Loader & controls
+    script(src='loaders/STLLoader.js')
+    script(src='controls/TrackballControls.js')
+    // angular-threejs-viewer
+    script(src='angular-3d-viewer.js')
+    // Demo app logic
+    script(src='app.js')
   body(ng-controller='myCtrl')
     .container
       ul(kendo-menu k-orientation='horizontal')
@@ -50,18 +72,37 @@ html(ng-app='myApp')
             li(ng-click='viewFromLeft()') 左視角
             li(ng-click='viewFromRight()') 右視角
             li(ng-click='viewFromTop()') 上視角
-            li(ng-click='viewFromButtom()') 下視角
+            li(ng-click='viewFromBottom()') 下視角
         li 特殊
           ul
+            li(ng-click='init()') 標準模式
             li(ng-click='toggleSplit()') 張口模式
             li 剖面模式
+        li
+          a(href="https://mail.google.com/mail/?view=cm&fs=1&to=someone@gmail.com&su=subject_here&body=body_here", target='_new') 回信
+        
+      div
+        ul.pagination(style='margin: 0;')
+          li(ng-repeat='mesh in meshs') 
+            a(ng-show='$first', href='#', ng-click='showStep($index)') Origin
+            a(ng-show='!$first && !$last', href='#', ng-click='showStep($index)') {{$index}}
+            a(ng-show='$last', href='#', ng-click='showStep($index)') Final
+      
+      div
+        |step {{step_anchor}} : {{profile.analysis[step_anchor]}}
+
       div(kendo-window='profilePanel', k-title="'客戶資料'", k-resizable='false', k-visible="false", k-on-open="profilePanel = true", k-on-close="profilePanel = false")
         img(style='width: 100px', src='images/pt.jpg')
-        p 編號 : {{data.id}}
-        p 姓名 : {{data.name}}
-        p 診所 : {{data.clinic}}
-        p 醫師 : {{data.doctor}}
+        p 編號 : {{profile.id}}
+        p 姓名 : {{profile.name}}
+        p 診所 : {{profile.clinic}}
+        p 醫師 : {{profile.doctor}}
         
+        //- p position {{camera.position}}
+        //- p rotation-x {{camera.rotation.x}}
+        //- p rotation-y {{camera.rotation.y}}
+        //- p rotation-z {{camera.rotation.z}}
+        //- input(ng-model='camera.top')
 
       //- button(class="k-button", ng-click="panel1.open()")
       //-   | User Data
@@ -119,25 +160,5 @@ html(ng-app='myApp')
       //-     .col-md-2
       //-       img(style='width: 120%; margin-left: -20%', src='images/logo.jpg')
       viewer
-      div {{camera}}
-
-    // jQuery
-    script(src='lib/jquery/jquery.min.js')
-    // async
-    script(src='lib/async/lib/async.js')
-    // Bootstrap
-    script(src='lib/bootstrap/dist/js/bootstrap.min.js')
-    // Three.JS r66
-    script(src='lib/threejs/build/three.min.js')
-    // AngularJS
-    script(src='lib/angular/angular.min.js')
-    // Angular-Kendo
-    script(src='lib/kendo-ui/js/kendo.ui.core.min.js')
-    script(src='lib/angular-kendo/build/angular-kendo.min.js')
-    // Loader & controls
-    script(src='loaders/STLLoader.js')
-    script(src='controls/TrackballControls.js')
-    // angular-threejs-viewer
-    script(src='angular-3d-viewer.js')
-    // Demo app logic
-    script(src='app.js')
+      
+    
