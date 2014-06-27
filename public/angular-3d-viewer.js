@@ -83,7 +83,7 @@ angular.module('angular-3d-viewer')
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(-1, 1, 1).normalize(); 
+        directionalLight.position.set(-1, 2, 1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
@@ -95,11 +95,11 @@ angular.module('angular-3d-viewer')
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(-1, 1, -1).normalize(); 
+        directionalLight.position.set(-1, 2, -1).normalize(); 
         scene.add( directionalLight );
 
         directionalLight = new THREE.DirectionalLight( light_color );
-        directionalLight.position.set(-1, -1, -1).normalize(); 
+        directionalLight.position.set(-1, -2, -1).normalize(); 
         scene.add( directionalLight );
       }
 
@@ -109,6 +109,13 @@ angular.module('angular-3d-viewer')
           scope.message = 'load model ..';
 
           var geometry = event.content;
+          console.log(geometry);
+
+          geometry.centroid = new THREE.Vector3();
+          for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+            geometry.centroid.addSelf( geometry.vertices[i].position );
+          } 
+          geometry.centroid.divideScalar( geometry.vertices.length );
 
           var mesh;
           if (event.info.type === 'tooth') {
@@ -149,21 +156,30 @@ angular.module('angular-3d-viewer')
       }
 
       function load() {
-        for (var i = 0; i<scope.step_num ;i+=1) {
-          // load top tooth
-          for (var j = 1; j<=16; j+=1) {
-            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
-          }
+        loader.load('./data/org/Tooth_2.stl', {stage: 0, type: 'tooth', location: 'top'});
+        loader.load('./data/org/Tooth_18.stl', {stage: 0, type: 'tooth', location: 'btm'});
+        loader.load('./data/org/Tooth_UpperJaw.stl', {stage: 0, type: 'jaw', location: 'top'});
+        loader.load('./data/org/Tooth_LowerJaw.stl', {stage: 0, type: 'jaw', location: 'btm'});
+        loader.load('./data/exp/Tooth_2.stl', {stage: 1, type: 'tooth', location: 'top'});
+        loader.load('./data/exp/Tooth_18.stl', {stage: 1, type: 'tooth', location: 'btm'});
+        loader.load('./data/exp/Tooth_UpperJaw.stl', {stage: 1, type: 'jaw', location: 'top'});
+        loader.load('./data/exp/Tooth_LowerJaw.stl', {stage: 1, type: 'jaw', location: 'btm'});
 
-          // load btm tooth
-          for (var j = 17; j<=32; j+=1) {
-            loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
-          }
+        // for (var i = 0; i<scope.step_num ;i+=1) {
+        //   // load top tooth
+        //   for (var j = 1; j<=16; j+=1) {
+        //     loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'top'});
+        //   }
 
-          // load jaw
-          loader.load('./data/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
-          loader.load('./data/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
-        }
+        //   // load btm tooth
+        //   for (var j = 17; j<=32; j+=1) {
+        //     loader.load('./data/stage'+i+'-zip/Tooth_'+j+'.stl', {stage: i, type: 'tooth', location: 'btm'});
+        //   }
+
+        //   // load jaw
+        //   loader.load('./data/stage'+i+'-zip/Tooth_UpperJaw.stl', {stage: i, type: 'jaw', location: 'top'});
+        //   loader.load('./data/stage'+i+'-zip/Tooth_LowerJaw.stl', {stage: i, type: 'jaw', location: 'btm'});
+        // }
       }
 
       function loadInfo() {
