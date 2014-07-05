@@ -3,8 +3,10 @@ var profile = {
   'name': "王小美",
   'clinic': "舒服美牙醫診所",
   'doctor': "陳冠宇",
-  'step_num': "4",
+  'step_num': "2",
+  'split_shift': 0,
   'analysis': [
+    '',
     '23,25關閉拔牙空間',
     '26,27往近心移動', 
     '前牙2-2往內縮',

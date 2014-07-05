@@ -3,12 +3,15 @@
     "version": "0.0.1",
     "dependencies": {
         "jquery": "latest",
+        "jquery-ui": "latest",
         "async": "latest",
         "bootstrap": "latest",
         "threejs": "r66",
         "angular": "latest",
         "components-font-awesome": "latest",
         "kendo-ui": "latest",
-        "angular-kendo": "latest"
+        "angular-kendo": "latest",
+        "angular-ui": "latest",
+        "angular-ui-slider": "latest"
     }
 }

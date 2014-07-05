@@ -2,13 +2,12 @@ html(ng-app='myApp')
   head
     meta(charset='utf-8') 
     // Bootstrap 3.1.1
-    link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    link(rel='stylesheet', href='lib/bootstrap/dist/css/bootstrap.min.css')
+    link(rel="stylesheet", href="lib/jquery-ui/themes/smoothness/jquery-ui.css")
     // Font Awesome
     link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
     // 
     link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.common.core.min.css')
-    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
-    link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
     link(rel='stylesheet', href='lib/kendo-ui/styles/web/kendo.default.min.css')
     link(rel='stylesheet', href='demo.css')
     // setting
@@ -19,6 +18,7 @@ html(ng-app='myApp')
     script(src='lib/async/lib/async.js')
     // Bootstrap
     script(src='lib/bootstrap/dist/js/bootstrap.min.js')
+    script(src='lib/jquery-ui/ui/minified/jquery-ui.min.js')
     // Three.JS r66
     script(src='lib/threejs/build/three.min.js')
     // AngularJS
@@ -26,6 +26,8 @@ html(ng-app='myApp')
     // Angular-Kendo
     script(src='lib/kendo-ui/js/kendo.ui.core.min.js')
     script(src='lib/angular-kendo/build/angular-kendo.min.js')
+    // ui-slider
+    script(src='lib/angular-ui-slider/src/slider.js')
     // Loader & controls
     script(src='loaders/STLLoader.js')
     script(src='controls/TrackballControls.js')
@@ -33,132 +35,79 @@ html(ng-app='myApp')
     script(src='angular-3d-viewer.js')
     // Demo app logic
     script(src='app.js')
-  body(ng-controller='myCtrl')
-    .container
-      ul(kendo-menu k-orientation='horizontal')
-        li 檔案
-          ul 
-            li(ng-click='profilePanel.open()') 病患資料
-            li 
-              a(href='data/analysis.pdf', target='_new') 評估文件
-            li 離開
-        li 播放 
-          ul
-            li(ng-click='init()') 最初階段
-            li(ng-click='lastStep()') 上一階段
-            li(ng-click='nextStep()') 下一階段
-            li(ng-click='viewFromRight()') 最後階段
-            li(ng-click='play()') 播放
-        li 上下顎
-          ul
-            li(ng-click='toggleTop()')
-              i.fa.fa-check(ng-show='showTop')
-              | 上顎
-            li(ng-click='toggleBtm()')
-              i.fa.fa-check(ng-show='showBtm')
-              | 下顎
-        li 牙肉分離
-          ul
-            li(ng-click='toggleTeeth()')
-              i.fa.fa-check(ng-show='showTeeth')
-              | 牙齒
-            li(ng-click='toggleJaw()') 
-              i.fa.fa-check(ng-show='showJaw')
-              | 牙肉
-        li 視角 
-          ul
-            li(ng-click='viewFromFront()') 前視角
-            li(ng-click='viewFromBack()') 後視角
-            li(ng-click='viewFromLeft()') 左視角
-            li(ng-click='viewFromRight()') 右視角
-            li(ng-click='viewFromTop()') 上視角
-            li(ng-click='viewFromBottom()') 下視角
-        li 特殊
-          ul
-            li(ng-click='init()') 標準模式
-            li(ng-click='toggleSplit()') 張口模式
-            li 剖面模式
-        li
-          a(href="https://mail.google.com/mail/?view=cm&fs=1&to=someone@gmail.com&su=subject_here&body=body_here", target='_new') 回信
-        
-      div
-        ul.pagination(style='margin: 0;')
-          li(ng-repeat='mesh in meshs') 
-            a(ng-show='$first', href='#', ng-click='showStep($index)') Origin
-            a(ng-show='!$first && !$last', href='#', ng-click='showStep($index)') {{$index}}
-            a(ng-show='$last', href='#', ng-click='showStep($index)') Final
-      
-      div
-        |step {{step_anchor}} : {{profile.analysis[step_anchor]}}
+  body(ng-controller='myCtrl', style='display:none')
+    div(id='dialog', title='關於我們')
+      a(href='https://www.facebook.com/sovtw?focus_composer=true&ref_type=bookmark', target='_new')
+        img(src='images/logo.jpg', style='height: 100%;')
+    ul(kendo-menu k-orientation="'horizontal'")
+      li 檔案
+        ul
+          li 
+            a(href='data/analysis.pdf', target='_new') 評估文件
+          li 離開
+      li 播放 
+        ul
+          li(ng-click='init()') 全部重置
+          li(ng-click='firstStep()') 最初階段
+          li(ng-click='lastStep()') 上一階段
+          li(ng-click='nextStep()') 下一階段
+          li(ng-click='finalStep()') 最後階段
+          li(ng-click='play()') 播放
+      li 上下顎
+        ul
+          li(ng-click='toggleTop()')
+            i.fa.fa-check(ng-show='showTop')
+            | 上顎
+          li(ng-click='toggleBtm()')
+            i.fa.fa-check(ng-show='showBtm')
+            | 下顎
+      li 牙肉分離
+        ul
+          li(ng-click='toggleTeeth()')
+            i.fa.fa-check(ng-show='showTeeth')
+            | 牙齒
+          li(ng-click='toggleJaw()') 
+            i.fa.fa-check(ng-show='showJaw')
+            | 牙肉
+      li 視角 
+        ul
+          li(ng-click='viewFromFront()') 前視角
+          li(ng-click='viewFromBack()') 後視角
+          li(ng-click='viewFromLeft()') 左視角
+          li(ng-click='viewFromRight()') 右視角
+          li(ng-click='viewFromTop()') 上視角
+          li(ng-click='viewFromBottom()') 下視角
+      li 特殊
+        ul
+          li(ng-click='init()') 標準模式
+          li(ng-click='toggleSplit()') 張口模式
+          li(ng-click='toggleProtho()') 贋復物預測
+      li
+        a(href="https://docs.google.com/forms/d/1IYhvYOzikuBsMsItd8C5p9gdz8_Axmz8k2XzW2DeaeM/viewform?entry_759069892={{profile.name}}&entry_1604151979={{profile.clinic}}&entry_742818928={{profile.doctor}}", target='_new') 下單資料填寫
 
-      div(kendo-window='profilePanel', k-title="'客戶資料'", k-resizable='false', k-visible="false", k-on-open="profilePanel = true", k-on-close="profilePanel = false")
-        img(style='width: 100px', src='images/pt.jpg')
-        p 編號 : {{profile.id}}
-        p 姓名 : {{profile.name}}
-        p 診所 : {{profile.clinic}}
-        p 醫師 : {{profile.doctor}}
-        
-        //- p position {{camera.position}}
-        //- p rotation-x {{camera.rotation.x}}
-        //- p rotation-y {{camera.rotation.y}}
-        //- p rotation-z {{camera.rotation.z}}
-        //- input(ng-model='camera.top')
-
-      //- button(class="k-button", ng-click="panel1.open()")
-      //-   | User Data
-      //- div(kendo-window="panel1", ng-show="panel", k-title="'Calendar'", k-on-open="panel = true", k-on-close="panel = false")
-      //-   .row.panel.panel-default.panel-body
-      //-     .col-md-2
-      //-       h6 客戶資料
-      //-       img(style='width: 100px', src='images/pt.jpg')
-      //-     .col-md-2
-      //-       h6 資訊
-      //-       p 編號 : {{data.id}}
-      //-       p 姓名 : {{data.name}}
-      //-       p 診所 : {{data.clinic}}
-      //-       p 醫師 : {{data.doctor}}
-      //-     .col-md-3
-      //-       h6 矯正階段: step {{step_anchor}}
-      //-       ul.pagination(style='margin: 0;')
-      //-         li(ng-repeat='mesh in meshs') 
-      //-           a(href='#', ng-click='showStep($index)') {{$index}}
-      //-       h6 播放選項
-      //-       .btn-group
-      //-         button.btn.btn-default(ng-click='init()')
-      //-           i.fa.fa-reply.fa-fw
-      //-         button.btn.btn-default(ng-click='lastStep()')
-      //-           i.fa.fa-step-backward.fa-fw
-      //-         button.btn.btn-default(ng-disabled='playStep', ng-click='play()')
-      //-           i.fa.fa-play.fa-fw
-      //-         //- button.btn.btn-default(ng-show='playStep',ng-click='stop()')
-      //-         //-   i.fa.fa-pause.fa-fw
-      //-         button.btn.btn-default(ng-click='nextStep()')
-      //-           i.fa.fa-step-forward.fa-fw
-      //-       h6 切換視角
-      //-       .btn-group
-      //-         button.btn.btn-default.btn-sm(ng-click='viewFromFront()') Front
-      //-         button.btn.btn-default.btn-sm(ng-click='viewFromBack()') Back
-      //-         button.btn.btn-default.btn-sm(ng-click='viewFromLeft()') Left
-      //-         button.btn.btn-default.btn-sm(ng-click='viewFromRight()') Right
-      //-         //- button.btn.btn-default.btn-sm(ng-click='viewFromTop()') Top
-      //-         //- button.btn.btn-default.btn-sm(ng-click='viewFromBottom()') Bottom
-      //-     .col-md-3
-      //-       h6 上下顎模式
-      //-       .btn-group
-      //-         button.btn.btn-default.btn-sm(ng-click='toggleTop()') toggleTop
-      //-         button.btn.btn-default.btn-sm(ng-click='toggleBtm()') toggleBtm
-      //-       h6 牙肉分離
-      //-       .btn-group
-      //-         button.btn.btn-default.btn-sm(ng-click='toggleTeeth()') toggleTeeth
-      //-         button.btn.btn-default.btn-sm(ng-click='toggleJaw()') toggleJaw
-      //-       h6 其他選項
-      //-       .btn-group
-      //-         button.btn.btn-default(ng-click='toggleSplit()')
-      //-           | 張口模式
-      //-         a.btn.btn-default(href='data/analysis.pdf', target='_new')
-      //-           | 開啟評估文件
-      //-     .col-md-2
-      //-       img(style='width: 120%; margin-left: -20%', src='images/logo.jpg')
-      viewer
-      
+    div(style='position: absolute; right: 0%; width: 120px;')
+      img(style='width: 100px', src='images/pt.jpg')
+      p 編號 : {{profile.id}}
+      p 姓名 : {{profile.name}}
+      p 診所 : {{profile.clinic}}
+      p 醫師 : {{profile.doctor}}
     
+    ul.list-group(style='position: absolute; left: 0%; width: 120px;')
+      li.list-group-item
+        a(ng-click='allWhite()') 全部白色
+      li.list-group-item(ng-repeat='mesh in meshs') 
+        i.fa.fa-eye(ng-show='step_visible[$index]', ng-click='toggleStepHide($index)')
+        i.fa.fa-eye-slash(ng-show='!step_visible[$index]', ng-click='toggleStepShow($index)')
+        &nbsp;
+        a(ng-show='$first', href='#', ng-click='onlyStepShow($index)') Origin
+        a(ng-show='!$first && !$last', href='#', ng-click='onlyStepShow($index)') Step-{{$index}}
+        a(ng-show='$last', href='#', ng-click='onlyStepShow($index)') Final
+        &nbsp;
+        select(class='selectColor', name='myColor', ng-model='myColor', ng-options='color.name for color in colors', ng-change='changeColor(myColor, $index)') {{myColor}}
+    viewer
+    .well(style='width: 100%; margin: auto;')
+      div(ui-slider='slider.options', min='0', max='{{step_num-1}}', ng-model='step_anchor')
+      p(ng-show='step_anchor==0') Origin
+      p(ng-show='step_anchor!==0 && step_anchor!==step_num-1') Step-{{step_anchor}} : {{profile.analysis[step_anchor]}}
+      p(ng-show='step_anchor==step_num-1') Final : {{profile.analysis[step_anchor]}}
+   

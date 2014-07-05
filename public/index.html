@@ -3,13 +3,12 @@
   <head>
     <meta charset="utf-8"/>
     <!-- Bootstrap 3.1.1-->
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-ui/themes/smoothness/jquery-ui.css"/>
     <!-- Font Awesome-->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"/>
     <!-- -->
     <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.common.core.min.css"/>
-    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
-    <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
     <link rel="stylesheet" href="lib/kendo-ui/styles/web/kendo.default.min.css"/>
     <link rel="stylesheet" href="demo.css"/>
     <!-- setting-->
@@ -20,6 +19,7 @@
     <script src="lib/async/lib/async.js"></script>
     <!-- Bootstrap-->
     <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="lib/jquery-ui/ui/minified/jquery-ui.min.js"></script>
     <!-- Three.JS r66-->
     <script src="lib/threejs/build/three.min.js"></script>
     <!-- AngularJS-->
@@ -27,6 +27,8 @@
     <!-- Angular-Kendo-->
     <script src="lib/kendo-ui/js/kendo.ui.core.min.js"></script>
     <script src="lib/angular-kendo/build/angular-kendo.min.js"></script>
+    <!-- ui-slider-->
+    <script src="lib/angular-ui-slider/src/slider.js"></script>
     <!-- Loader & controls-->
     <script src="loaders/STLLoader.js"></script>
     <script src="controls/TrackballControls.js"></script>
@@ -35,69 +37,74 @@
     <!-- Demo app logic-->
     <script src="app.js"></script>
   </head>
-  <body ng-controller="myCtrl">
-    <div class="container">
-      <ul kendo-menu="kendo-menu" k-orientation="horizontal">
-        <li>檔案
-          <ul>
-            <li ng-click="profilePanel.open()">病患資料</li>
-            <li><a href="data/analysis.pdf" target="_new">評估文件</a></li>
-            <li>離開</li>
-          </ul>
-        </li>
-        <li>播放 
-          <ul>
-            <li ng-click="init()">最初階段</li>
-            <li ng-click="lastStep()">上一階段</li>
-            <li ng-click="nextStep()">下一階段</li>
-            <li ng-click="viewFromRight()">最後階段</li>
-            <li ng-click="play()">播放</li>
-          </ul>
-        </li>
-        <li>上下顎
-          <ul>
-            <li ng-click="toggleTop()"><i ng-show="showTop" class="fa fa-check"></i>上顎</li>
-            <li ng-click="toggleBtm()"><i ng-show="showBtm" class="fa fa-check"></i>下顎</li>
-          </ul>
-        </li>
-        <li>牙肉分離
-          <ul>
-            <li ng-click="toggleTeeth()"><i ng-show="showTeeth" class="fa fa-check"></i>牙齒</li>
-            <li ng-click="toggleJaw()"><i ng-show="showJaw" class="fa fa-check"></i>牙肉</li>
-          </ul>
-        </li>
-        <li>視角 
-          <ul>
-            <li ng-click="viewFromFront()">前視角</li>
-            <li ng-click="viewFromBack()">後視角</li>
-            <li ng-click="viewFromLeft()">左視角</li>
-            <li ng-click="viewFromRight()">右視角</li>
-            <li ng-click="viewFromTop()">上視角</li>
-            <li ng-click="viewFromBottom()">下視角</li>
-          </ul>
-        </li>
-        <li>特殊
-          <ul>
-            <li ng-click="init()">標準模式</li>
-            <li ng-click="toggleSplit()">張口模式</li>
-            <li>剖面模式</li>
-          </ul>
-        </li>
-        <li><a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=someone@gmail.com&amp;su=subject_here&amp;body=body_here" target="_new">回信</a></li>
-      </ul>
-      <div>
-        <ul style="margin: 0;" class="pagination">
-          <li ng-repeat="mesh in meshs"><a ng-show="$first" href="#" ng-click="showStep($index)">Origin</a><a ng-show="!$first &amp;&amp; !$last" href="#" ng-click="showStep($index)">{{$index}}</a><a ng-show="$last" href="#" ng-click="showStep($index)">Final</a></li>
+  <body ng-controller="myCtrl" style="display:none">
+    <div id="dialog" title="關於我們"><a href="https://www.facebook.com/sovtw?focus_composer=true&amp;ref_type=bookmark" target="_new"><img src="images/logo.jpg" style="height: 100%;"/></a></div>
+    <ul kendo-menu="kendo-menu" k-orientation="'horizontal'">
+      <li>檔案
+        <ul>
+          <li><a href="data/analysis.pdf" target="_new">評估文件</a></li>
+          <li>離開</li>
         </ul>
-      </div>
-      <div>step {{step_anchor}} : {{profile.analysis[step_anchor]}}</div>
-      <div kendo-window="profilePanel" k-title="'客戶資料'" k-resizable="false" k-visible="false" k-on-open="profilePanel = true" k-on-close="profilePanel = false"><img style="width: 100px" src="images/pt.jpg"/>
-        <p>編號 : {{profile.id}}</p>
-        <p>姓名 : {{profile.name}}</p>
-        <p>診所 : {{profile.clinic}}</p>
-        <p>醫師 : {{profile.doctor}}</p>
-      </div>
-      <viewer></viewer>
+      </li>
+      <li>播放 
+        <ul>
+          <li ng-click="init()">全部重置</li>
+          <li ng-click="firstStep()">最初階段</li>
+          <li ng-click="lastStep()">上一階段</li>
+          <li ng-click="nextStep()">下一階段</li>
+          <li ng-click="finalStep()">最後階段</li>
+          <li ng-click="play()">播放</li>
+        </ul>
+      </li>
+      <li>上下顎
+        <ul>
+          <li ng-click="toggleTop()"><i ng-show="showTop" class="fa fa-check"></i>上顎</li>
+          <li ng-click="toggleBtm()"><i ng-show="showBtm" class="fa fa-check"></i>下顎</li>
+        </ul>
+      </li>
+      <li>牙肉分離
+        <ul>
+          <li ng-click="toggleTeeth()"><i ng-show="showTeeth" class="fa fa-check"></i>牙齒</li>
+          <li ng-click="toggleJaw()"><i ng-show="showJaw" class="fa fa-check"></i>牙肉</li>
+        </ul>
+      </li>
+      <li>視角 
+        <ul>
+          <li ng-click="viewFromFront()">前視角</li>
+          <li ng-click="viewFromBack()">後視角</li>
+          <li ng-click="viewFromLeft()">左視角</li>
+          <li ng-click="viewFromRight()">右視角</li>
+          <li ng-click="viewFromTop()">上視角</li>
+          <li ng-click="viewFromBottom()">下視角</li>
+        </ul>
+      </li>
+      <li>特殊
+        <ul>
+          <li ng-click="init()">標準模式</li>
+          <li ng-click="toggleSplit()">張口模式</li>
+          <li ng-click="toggleProtho()">贋復物預測</li>
+        </ul>
+      </li>
+      <li><a href="https://docs.google.com/forms/d/1IYhvYOzikuBsMsItd8C5p9gdz8_Axmz8k2XzW2DeaeM/viewform?entry_759069892={{profile.name}}&amp;entry_1604151979={{profile.clinic}}&amp;entry_742818928={{profile.doctor}}" target="_new">下單資料填寫</a></li>
+    </ul>
+    <div style="position: absolute; right: 0%; width: 120px;"><img style="width: 100px" src="images/pt.jpg"/>
+      <p>編號 : {{profile.id}}</p>
+      <p>姓名 : {{profile.name}}</p>
+      <p>診所 : {{profile.clinic}}</p>
+      <p>醫師 : {{profile.doctor}}</p>
+    </div>
+    <ul style="position: absolute; left: 0%; width: 120px;" class="list-group">
+      <li class="list-group-item"><a ng-click="allWhite()">全部白色</a></li>
+      <li ng-repeat="mesh in meshs" class="list-group-item"><i ng-show="step_visible[$index]" ng-click="toggleStepHide($index)" class="fa fa-eye"></i><i ng-show="!step_visible[$index]" ng-click="toggleStepShow($index)" class="fa fa-eye-slash"></i>&nbsp;<a ng-show="$first" href="#" ng-click="onlyStepShow($index)">Origin</a><a ng-show="!$first &amp;&amp; !$last" href="#" ng-click="onlyStepShow($index)">Step-{{$index}}</a><a ng-show="$last" href="#" ng-click="onlyStepShow($index)">Final</a>&nbsp;
+        <select name="myColor" ng-model="myColor" ng-options="color.name for color in colors" ng-change="changeColor(myColor, $index)" class="selectColor">{{myColor}}</select>
+      </li>
+    </ul>
+    <viewer></viewer>
+    <div style="width: 100%; margin: auto;" class="well">
+      <div ui-slider="slider.options" min="0" max="{{step_num-1}}" ng-model="step_anchor"></div>
+      <p ng-show="step_anchor==0">Origin</p>
+      <p ng-show="step_anchor!==0 &amp;&amp; step_anchor!==step_num-1">Step-{{step_anchor}} : {{profile.analysis[step_anchor]}}</p>
+      <p ng-show="step_anchor==step_num-1">Final : {{profile.analysis[step_anchor]}}</p>
     </div>
   </body>
 </html>
